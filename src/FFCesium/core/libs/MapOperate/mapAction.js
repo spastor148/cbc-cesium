@@ -35,9 +35,34 @@ export const mapAction = {
       console.log("getCameraEvent--当前相机位置信息--option", option);
     }, 2000);
   },
+  //获取相机位置信息
+  getCameraLocation(){
+      // 获取相机位置
+      var cameraPosition = viewer.camera.position;
+      var ellipsoid = viewer.scene.globe.ellipsoid;
+      var cartesian3 = new Cesium.Cartesian3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+      var cartographic = ellipsoid.cartesianToCartographic(cartesian3);
+      var lat = Cesium.Math.toDegrees(cartographic.latitude);
+      var lng = Cesium.Math.toDegrees(cartographic.longitude);
+      var height = cartographic.height;
+      option.lng = lng;
+      option.lat = lat;
+      option.height = height;
+      //获取倾斜角度
+      var pitch = Cesium.Math.toDegrees(viewer.camera.pitch);
+      var heading = Cesium.Math.toDegrees(viewer.camera.heading);
+      var roll = Cesium.Math.toDegrees(viewer.camera.roll);
+      var heightInMeters = viewer.camera.positionCartographic.height;
+      option.lng = lng;
+      option.lat = lat;
+      option.height = heightInMeters;
+      option.pitch = pitch;
+      option.heading = heading;
+      option.roll = roll;
+      console.log("getCameraEvent--当前相机位置信息--option", option);
+      return option;
+  },
   
-
-
   /**
    * 飞向指定坐标并应用特定的视角效果。
    *
@@ -63,7 +88,7 @@ export const mapAction = {
       offset: {
         heading: the.viewer.camera.heading,
         pitch: Cesium.Math.toRadians(option.pitchRadiu),
-        range: option.distance
+        range: option.eyeHeight
       }
     });
     flyPromise.then(function () {

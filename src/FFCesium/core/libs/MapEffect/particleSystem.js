@@ -1,7 +1,5 @@
 import * as Cesium from "cesium";
 
-import { myParticleSystem } from "../../dependentLib/myParticleSystem.js";
-
 export const particleSystem = {
   ffCesiumCloudCollection: null, //大量云朵
   addCloudEffect(option) {
@@ -188,16 +186,5 @@ export const particleSystem = {
   //移除雾效果
   removeFogEffect(fogEffect) {
     this.viewer.scene.postProcessStages.remove(fogEffect);
-  },
-  //叠加火焰效果
-  addFireEffect(lnglatheight, option) {
-    let particlefire = myParticleSystem.init(lnglatheight, option);
-    this.viewer.scene.primitives.add(particlefire);
-    return particlefire;
-  },
-  //移除火焰效果
-  removeFireEffect(primitive) {
-    console.log("removeFireEffect--primitive", primitive);
-    this.viewer.scene.primitives.remove(primitive);
   },
 };

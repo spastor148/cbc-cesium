@@ -1,5 +1,5 @@
 {
-  "name": "cbc-ff-cesium",
+  "name": "cbc-cesium",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",

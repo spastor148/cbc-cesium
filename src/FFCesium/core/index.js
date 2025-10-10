@@ -1,4 +1,5 @@
 import * as Cesium from "cesium";
+import ParticleEffectClass from "./libs/MapEffect/ParticleEffectClass.js";
 
 //地图接入
 import { mapServer } from "./libs/MapAccess/mapServer.js";
@@ -19,6 +20,7 @@ import { militaryPlottingEdit } from "./libs/MapGather/militaryPlottingEdit.js";
 import { particleSystem } from "./libs/MapEffect/particleSystem.js";
 import { polygonEffect } from "./libs/MapEffect/polygonEffect.js";
 import { polylineEffect } from "./libs/MapEffect/polylineEffect.js";
+
 //空间分析
 import { judgeRelation } from "./libs/SpatialAnalysis/judgeRelation.js";
 //高级示例
@@ -36,6 +38,7 @@ import FlyRoamNew from "../senior/libs/flyRoamNew/index.js";
 //入口文件
 class FFCesium {
   Version = "V1.0.0";
+  particleEffectClass; //地图效果--粒子效果类
   cesiumID;
   viewer;
   Cesium;
@@ -101,6 +104,11 @@ class FFCesium {
 
     this.addPrimitiveInit();
     console.log("FFCesium构建总耗时（ms）", time3 - time1);
+
+    /**
+     * 地图效果类
+     */
+    this.particleEffectClass = new ParticleEffectClass(this); //粒子效果类
   }
   defaultMap() {
     let viewerOption = {

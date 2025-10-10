@@ -25,9 +25,9 @@ export const particleSystemMenuConfigs = [
     img: "./images/menu/addGeode.png",
   },
   {
-    title: "火焰效果",
-    key: "addFireEffect",
-    url: "./FFCesiumExample/MapEffect/particleSystem/addFireEffect.vue",
+    title: "粒子效果",
+    key: "addParticleEffect",
+    url: "./FFCesiumExample/MapEffect/particleSystem/addParticleEffect.vue",
     img: "./images/menu/addGeode.png",
   },
 ];
