@@ -28,11 +28,11 @@ const addFogEffectFun = () => {
   let option = {
     alpha: 0.5,
   };
-  fogEffect = ffCesium.addFogEffect(option);
+  fogEffect = ffCesium.weatherEffectClass.addFogEffect(option);
 };
 
 const removeFogEffectFun = () => {
-  ffCesium.removeFogEffect(fogEffect);
+  ffCesium.weatherEffectClass.removeFogEffect(fogEffect);
 };
 </script>
 <style scoped>

@@ -1,62 +1,37 @@
 import * as Cesium from "cesium";
-
-export const particleSystem = {
-  ffCesiumCloudCollection: null, //大量云朵
-  addCloudEffect(option) {
-    if (!this.ffCesiumCloudCollection) {
-      this.ffCesiumCloudCollection = this.viewer.scene.primitives.add(
-        new Cesium.CloudCollection({
-          noiseDetail: 16.0,
-          noiseOffset: Cesium.Cartesian3.ZERO,
-        })
-      );
-    }
-
-    let cloud = this.ffCesiumCloudCollection.add({
-      position: Cesium.Cartesian3.fromDegrees(
-        option.lng,
-        option.lat,
-        option.height
-      ),
-      scale: new Cesium.Cartesian2(option.scaleX, option.scaleY),
-      slice: option.slice,
-      color: Cesium.Color.fromCssColorString(option.color),
-      maximumSize: new Cesium.Cartesian3(
-        option.maximumSizeX,
-        option.maximumSizeY,
-        option.maximumSizeZ
-      ),
-    });
-    return cloud;
-  },
-
+class WeatherEffectLogic {
+  ffCesium;
+  ffCesiumCloudCollection; //云集合
+  constructor(ffCesium) {
+    this.ffCesium = ffCesium;
+  }
   //叠加雨效果
   addRainEffect(option) {
     const FS_Rain = `uniform sampler2D colorTexture;
-			 in vec2 v_textureCoordinates;
-       uniform float tiltAngle;
-       uniform float rainSize;
-       uniform float rainWidth;
-       uniform float rainSpeed;
-			 float hash(float x){
-					return fract(sin(x*233.3)*13.13);
-			 }
-       out vec4 vFragColor;
-			void main(void){
-				float time = czm_frameNumber / rainSpeed;
-			  vec2 resolution = czm_viewport.zw;
-			  vec2 uv=(gl_FragCoord.xy*2.-resolution.xy)/min(resolution.x,resolution.y);
-			  vec3 c=vec3(1.0,1.0,1.0);
-			  float a= tiltAngle;
-			  float si=sin(a),co=cos(a);
-			  uv*=mat2(co,-si,si,co);
-			  uv*=length(uv+vec2(0,4.9))*rainSize + 1.;
-			  float v = 1.0 - abs(sin(hash(floor(uv.x * rainWidth)) * 2.0));
-			  float b=clamp(abs(sin(20.*time*v+uv.y*(5./(2.+v))))-.95,0.,1.)*20.;
-			  c*=v*b;
-        vFragColor = mix(texture(colorTexture, v_textureCoordinates), vec4(c,.3), .3);
-			}
-    `;
+                 in vec2 v_textureCoordinates;
+           uniform float tiltAngle;
+           uniform float rainSize;
+           uniform float rainWidth;
+           uniform float rainSpeed;
+                 float hash(float x){
+                        return fract(sin(x*233.3)*13.13);
+                 }
+           out vec4 vFragColor;
+                void main(void){
+                    float time = czm_frameNumber / rainSpeed;
+                  vec2 resolution = czm_viewport.zw;
+                  vec2 uv=(gl_FragCoord.xy*2.-resolution.xy)/min(resolution.x,resolution.y);
+                  vec3 c=vec3(1.0,1.0,1.0);
+                  float a= tiltAngle;
+                  float si=sin(a),co=cos(a);
+                  uv*=mat2(co,-si,si,co);
+                  uv*=length(uv+vec2(0,4.9))*rainSize + 1.;
+                  float v = 1.0 - abs(sin(hash(floor(uv.x * rainWidth)) * 2.0));
+                  float b=clamp(abs(sin(20.*time*v+uv.y*(5./(2.+v))))-.95,0.,1.)*20.;
+                  c*=v*b;
+            vFragColor = mix(texture(colorTexture, v_textureCoordinates), vec4(c,.3), .3);
+                }
+        `;
     var rainEffect = new Cesium.PostProcessStage({
       name: "FFCesium.addRainEffect",
       fragmentShader: FS_Rain,
@@ -64,16 +39,16 @@ export const particleSystem = {
         tiltAngle: option.tiltAngle, //雨长度
         rainSize: option.rainSize, //雨长度
         rainWidth: option.rainWidth, //雨长度
-        rainSpeed: option.rainSpeed, //雨长度
-      },
+        rainSpeed: option.rainSpeed //雨长度
+      }
     });
-    this.viewer.scene.postProcessStages.add(rainEffect);
+    this.ffCesium.viewer.scene.postProcessStages.add(rainEffect);
     return rainEffect;
-  },
+  }
   //移除雨效果
   removeRainEffect(rainEffect) {
-    this.viewer.scene.postProcessStages.remove(rainEffect);
-  },
+    this.ffCesium.viewer.scene.postProcessStages.remove(rainEffect);
+  }
 
   //叠加雪效果
   addSnowEffect(option) {
@@ -110,18 +85,17 @@ export const particleSystem = {
       name: "FFCesium.addSnowEffect",
       fragmentShader: FS_Snow,
       uniforms: {
-        snowSpeed: option.snowSpeed, //雪速
-      },
+        snowSpeed: option.snowSpeed //雪速
+      }
     });
-    this.viewer.scene.postProcessStages.add(snowEffect);
+    this.ffCesium.viewer.scene.postProcessStages.add(snowEffect);
     return snowEffect;
-  },
+  }
 
   //移除雪效果
   removeSnowEffect(snowEffect) {
-    this.viewer.scene.postProcessStages.remove(snowEffect);
-  },
-
+    this.ffCesium.viewer.scene.postProcessStages.remove(snowEffect);
+  }
   //叠加雾效果
   addFogEffect(option) {
     const FS_Fog = `float getDistance(sampler2D depthTexture, vec2 texCoords)
@@ -177,14 +151,39 @@ export const particleSystem = {
       fragmentShader: FS_Fog,
       uniforms: {
         fogByDistance: new Cesium.Cartesian4(500, 0.0, 4000, option.alpha), //alpha 浓度
-        fogColor: Cesium.Color.WHITE,
-      },
+        fogColor: Cesium.Color.WHITE
+      }
     });
-    this.viewer.scene.postProcessStages.add(fogEffect);
+    this.ffCesium.viewer.scene.postProcessStages.add(fogEffect);
     return fogEffect;
-  },
+  }
   //移除雾效果
   removeFogEffect(fogEffect) {
-    this.viewer.scene.postProcessStages.remove(fogEffect);
-  },
-};
+    this.ffCesium.viewer.scene.postProcessStages.remove(fogEffect);
+  }
+  //叠加云效果
+  addCloudEffect(option) {
+    if (!this.ffCesiumCloudCollection) {
+      this.ffCesiumCloudCollection = this.ffCesium.viewer.scene.primitives.add(
+        new Cesium.CloudCollection({
+          noiseDetail: 16.0,
+          noiseOffset: Cesium.Cartesian3.ZERO
+        })
+      );
+    }
+    let cloud = this.ffCesiumCloudCollection.add({
+      position: Cesium.Cartesian3.fromDegrees(option.lng, option.lat, option.height),
+      scale: new Cesium.Cartesian2(option.scaleX, option.scaleY),
+      slice: option.slice,
+      color: Cesium.Color.fromCssColorString(option.color),
+      maximumSize: new Cesium.Cartesian3(option.maximumSizeX, option.maximumSizeY, option.maximumSizeZ)
+    });
+    return cloud;
+  }
+  //移除云效果
+  removeCloudEffect() {
+    this.ffCesiumCloudCollection.removeAll();
+  }
+}
+
+export default WeatherEffectLogic;

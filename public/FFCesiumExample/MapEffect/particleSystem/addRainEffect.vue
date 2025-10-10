@@ -31,11 +31,11 @@ const addRainEffectFun = () => {
     rainWidth: 20, //值越小，雨点间隔越大
     rainSpeed: 90, //值越小，速度越大
   };
-  rainEffect = ffCesium.addRainEffect(option);
+  rainEffect = ffCesium.weatherEffectClass.addRainEffect(option);
 };
 
 const removeRainEffectFun = () => {
-  ffCesium.removeRainEffect(rainEffect);
+  ffCesium.weatherEffectClass.removeRainEffect(rainEffect);
 };
 </script>
 <style scoped>

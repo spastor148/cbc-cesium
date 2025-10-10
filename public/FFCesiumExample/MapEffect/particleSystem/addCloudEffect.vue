@@ -26,6 +26,7 @@ onMounted(() => {
 let cloudEffect = null;
 let timer = null;
 const addCloudEffectFun = () => {
+  console.log("addCloudEffectFun--ffCesium",ffCesium);
   let option = {
     lng: 118.1265,
     lat: 24.4695,
@@ -38,7 +39,7 @@ const addCloudEffectFun = () => {
     maximumSizeY: 22,
     maximumSizeZ: 21,
   };
-  cloudEffect = ffCesium.addCloudEffect(option);
+  cloudEffect = ffCesium.weatherEffectClass.addCloudEffect(option);
   console.log("cloudEffect", cloudEffect);
   let xTemp = 0;
   let yTemp = 0;
@@ -54,7 +55,7 @@ const addCloudEffectFun = () => {
 };
 
 const removeCloudEffectFun = () => {
-  ffCesium.ffCesiumCloudCollection.removeAll();
+  ffCesium.weatherEffectClass.removeCloudEffect();
   window.clearInterval(timer);
 };
 </script>

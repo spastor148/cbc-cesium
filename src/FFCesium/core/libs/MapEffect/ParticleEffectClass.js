@@ -1,4 +1,4 @@
-import ParticleSystem from "./SubClass/ParticleSystem.js";
+import ParticleEffectLogic from "./SubClass/ParticleEffectLogic.js";
 class ParticleEffectClass {
   ffCesium;
   addParticleEffectInfo='叠加粒子效果方法(addParticleEffect)';
@@ -8,10 +8,10 @@ class ParticleEffectClass {
   }
   //叠加粒子效果
   addParticleEffect(option) {
-    let particleSystem = new ParticleSystem();
-    let particlefire = particleSystem.init(option);
-    this.ffCesium.viewer.scene.primitives.add(particlefire);
-    return particlefire;
+    let particleEffectLogic = new ParticleEffectLogic();
+    let particleObj = particleEffectLogic.init(option);
+    this.ffCesium.viewer.scene.primitives.add(particleObj);
+    return particleObj;
   }
   //移除粒子效果
   removeParticleEffect(primitive) {

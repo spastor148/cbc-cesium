@@ -1,5 +1,8 @@
 import * as Cesium from "cesium";
-import ParticleEffectClass from "./libs/MapEffect/ParticleEffectClass.js";
+
+import ParticleEffectClass from "./libs/MapEffect/ParticleEffectClass.js";//粒子效果类
+import WeatherEffectClass from "./libs/MapEffect/WeatherEffectClass.js";//天气效果类
+
 
 //地图接入
 import { mapServer } from "./libs/MapAccess/mapServer.js";
@@ -17,7 +20,6 @@ import { elementEdit } from "./libs/MapGather/elementEdit.js";
 import { militaryPlottingGather } from "./libs/MapGather/militaryPlottingGather.js";
 import { militaryPlottingEdit } from "./libs/MapGather/militaryPlottingEdit.js";
 //地图效果
-import { particleSystem } from "./libs/MapEffect/particleSystem.js";
 import { polygonEffect } from "./libs/MapEffect/polygonEffect.js";
 import { polylineEffect } from "./libs/MapEffect/polylineEffect.js";
 
@@ -39,6 +41,7 @@ import FlyRoamNew from "../senior/libs/flyRoamNew/index.js";
 class FFCesium {
   Version = "V1.0.0";
   particleEffectClass; //地图效果--粒子效果类
+  weatherEffectClass; //地图效果--天气效果类
   cesiumID;
   viewer;
   Cesium;
@@ -68,7 +71,6 @@ class FFCesium {
       //军事标绘修改
       ...militaryPlottingEdit,
       //地图效果
-      ...particleSystem,
       ...polygonEffect,
       ...polylineEffect,
       //空间分析
@@ -98,6 +100,8 @@ class FFCesium {
     }
     this.viewer._cesiumWidget._creditContainer.style.display = "none"; //去除版权信息
     let time3 = new Date().getTime();
+
+    
     this.rotateTool = new RotateTool(this);
     this.flyRoam = new FlyRoam(this);
     this.flyRoamNew = new FlyRoamNew(this);
@@ -109,6 +113,7 @@ class FFCesium {
      * 地图效果类
      */
     this.particleEffectClass = new ParticleEffectClass(this); //粒子效果类
+    this.weatherEffectClass = new WeatherEffectClass(this);
   }
   defaultMap() {
     let viewerOption = {

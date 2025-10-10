@@ -1,19 +1,19 @@
 //地图天气效果
-export const particleSystemMenuConfigs = [
+export const weatherMenuConfigs = [
   {
-    title: "雨效果",
+    title: "全局雨效果",
     key: "addRainEffect",
     url: "./FFCesiumExample/MapEffect/particleSystem/addRainEffect.vue",
     img: "./images/menu/addGeode.png",
   },
   {
-    title: "雪效果",
+    title: "全局雪效果",
     key: "addSnowEffect",
     url: "./FFCesiumExample/MapEffect/particleSystem/addSnowEffect.vue",
     img: "./images/menu/addGeode.png",
   },
   {
-    title: "雾效果",
+    title: "全局雾效果",
     key: "addFogEffect",
     url: "./FFCesiumExample/MapEffect/particleSystem/addFogEffect.vue",
     img: "./images/menu/addGeode.png",
@@ -24,6 +24,9 @@ export const particleSystemMenuConfigs = [
     url: "./FFCesiumExample/MapEffect/particleSystem/addCloudEffect.vue",
     img: "./images/menu/addGeode.png",
   },
+]
+//粒子效果
+export const particleSystemMenuConfigs = [
   {
     title: "粒子效果",
     key: "addParticleEffect",

@@ -28,11 +28,11 @@ const addSnowEffectFun = () => {
   let option = {
     snowSpeed: 90, //值越小，速度越大
   };
-  snowEffect = ffCesium.addSnowEffect(option);
+  snowEffect = ffCesium.weatherEffectClass.addSnowEffect(option);
 };
 
 const removeSnowEffectFun = () => {
-  ffCesium.removeSnowEffect(snowEffect);
+  ffCesium.weatherEffectClass.removeSnowEffect(snowEffect);
 };
 </script>
 <style scoped>

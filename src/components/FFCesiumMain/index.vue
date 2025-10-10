@@ -3,7 +3,7 @@
     <el-container style="height: 100%">
       <el-header>
         <div>
-          <span style="cursor: pointer; color: #ffffff; font-size: 26px; font-weight: bold; padding-left: 30px">CBC-CESIUM</span>
+          <span style="cursor: pointer; color: #ffffff; font-size: 26px; font-weight: bold; padding-left: 30px">CESIUM</span>
         </div>
       </el-header>
       <el-container style="height: 100%">

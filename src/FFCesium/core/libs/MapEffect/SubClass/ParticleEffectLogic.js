@@ -1,6 +1,8 @@
 import * as Cesium from "cesium";
-
-class ParticleSystemClass  {
+/**
+ * 粒子系统类
+ */
+class ParticleEffectLogic  {
   constructor() {}
   init(option) {
     let optionParam={
@@ -41,4 +43,4 @@ class ParticleSystemClass  {
     return result;
   }
 };
-export default ParticleSystemClass
+export default ParticleEffectLogic
