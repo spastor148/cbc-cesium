@@ -77,4 +77,10 @@ export const polygonEffectMenuConfigs = [
     url: "./FFCesiumExample/MapEffect/polygonEffect/addWaterSurfaceEffect.vue",
     img: "./images/menu/addGeode.png",
   },
+   {
+    title: "水体效果",
+    key: "addWaterVolumeEffect",
+    url: "./FFCesiumExample/MapEffect/polygonEffect/addWaterVolumeEffect.vue",
+    img: "./images/menu/addGeode.png",
+  },
 ];

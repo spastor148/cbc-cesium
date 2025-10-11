@@ -2,16 +2,16 @@
   <div id="cesiumContainer">
     <button
       style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addWaterSurfaceEffectFun"
+      @click="addWaterVolumeEffectFun"
     >
-      叠加水面效果
+      叠加水体效果
     </button>
 
     <button
       style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeWaterSurfaceEffectFun"
+      @click="removeWaterVolumeEffectFun"
     >
-      移除水面效果
+      移除水体效果
     </button>
   </div>
 </template>
@@ -24,25 +24,26 @@ onMounted(() => {
   ffCesium = new FFCesium("cesiumContainer");
 });
 let polygonPrimitive = null;
-const addWaterSurfaceEffectFun = () => {
+const addWaterVolumeEffectFun = () => {
   let lnglatArr = [
     [118.17925038959659, 24.448614020090428],
     [118.1648102175159, 24.436475136885853],
     [118.17045019418286, 24.419280773762722],
     [118.19359437684406, 24.430309905788533],
   ];
-
   let option = {
     image: "../images/FFCesium/MapEffect/polygonEffect/water.jpg",
     frequency: 1000.0, //频率
     animationSpeed: 0.01, //动画速度
     amplitude: 10, //振幅
+    height:130,
+    extrudedHeight:0.5
   };
-  polygonPrimitive = ffCesium.polygonEffectClass.addWaterSurfaceEffect(lnglatArr, option);
+  polygonPrimitive = ffCesium.polygonEffectClass.addWaterVolumeEffect(lnglatArr, option);
 };
 
-const removeWaterSurfaceEffectFun = () => {
-  ffCesium.polygonEffectClass.removeWaterSurfaceEffect(polygonPrimitive);
+const removeWaterVolumeEffectFun = () => {
+  ffCesium.polygonEffectClass.removeWaterVolumeEffect(polygonPrimitive);
 };
 </script>
 <style scoped>
