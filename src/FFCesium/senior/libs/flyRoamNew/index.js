@@ -14,6 +14,7 @@ class FlyRoamNew {
   option;
   FlyRoamPoint = null;
   pauseFlag = false;
+  intervalTime=null;
 
   constructor(ffCesium) {
     this.ffCesium = ffCesium;
@@ -31,8 +32,14 @@ class FlyRoamNew {
   }
 
   stopFly() {
-    this.ffCesium.viewer.entities.remove(this.FlyRoamPoint);
-    this.FlyRoamPoint = null;
+    if (this.intervalTime) {
+      window.clearInterval(this.intervalTime)
+      this.intervalTime = null
+    }
+    if (this.FlyRoamPoint) {
+      this.ffCesium.viewer.entities.remove(this.FlyRoamPoint)
+      this.FlyRoamPoint = null
+    }
     this.pauseFlag = false;
   }
 
@@ -53,6 +60,10 @@ class FlyRoamNew {
     } else {
       alphaTemp = 0;
     }
+
+    this.intervalTime = window.setInterval(option.continuousFun, option.continuousTime)
+
+
     this.FlyRoamPoint = viewer.entities.add({
       position: new Cesium.CallbackProperty(function () {
         //暂停漫游与继续漫游

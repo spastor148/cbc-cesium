@@ -74,7 +74,11 @@ const routes = [
   {
     path: "/mapDataLayer",
     component: () => import("@/MapSenior/MapDataLayer/index.vue")
-  }
+  },
+  {
+    path: "/TileEditTool",
+    component: () => import("@/MapSenior/TileEditTool/index.vue")
+  },
 ];
 const router = createRouter({
   history: createWebHashHistory(), // hash路由模式

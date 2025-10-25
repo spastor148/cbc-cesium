@@ -13,9 +13,19 @@ export default defineConfig({
     host: "192.168.25.43",
     port: "4000"
   },
+  
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src")
     }
-  }
+  },
+  // build: {
+  //   target: 'esnext', 
+  // },
+  // optimizeDeps: {
+  //   exclude: ['cesium'],
+  //   esbuildOptions: {
+  //     target: 'esnext', 
+  //   },
+  // }
 });

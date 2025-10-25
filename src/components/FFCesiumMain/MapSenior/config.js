@@ -20,5 +20,13 @@ export const mapSeniorMenuConfigs = [
     url: "/mapDataLayer",
     type: "VUE",
     img: "./images/menu/addGeode.png"
+  },
+  {
+    title: "3dTile模型编辑工具",
+    key: "TileEditTool",
+    url: "/TileEditTool",
+    type: "VUE",
+    img: "./images/menu/addGeode.png"
   }
+  
 ];

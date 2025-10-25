@@ -77,6 +77,9 @@
     });
     console.log("ffCesium", ffCesium);
 
+    //显示帧率
+    ffCesium.viewer.scene.debugShowFramesPerSecond = true
+
     let option = {
       width: 1,
       color: "#FFFF00",
@@ -85,31 +88,31 @@
     let polylineEntity = ffCesium.addPolylineEntity(lnglatArr, option);
   });
 
-  let flyRoamIntervalTimer = null;
   const endFlyRoamCallBack = () => {
     console.log("结束漫游回调");
-    if (flyRoamIntervalTimer) {
-      window.clearInterval(flyRoamIntervalTimer);
-      flyRoamIntervalTimer = null;
-    }
   };
-  const getMovePointPosition = () => {
-    let position = ffCesium.flyRoamNew.FlyRoamPoint.position.getValue(ffCesium.viewer.clock.currentTime);
-    console.log("getMovePointPosition--position", position);
-  };
+
 
   const FlyRoam = () => {
-    flyRoamIntervalTimer = window.setInterval(getMovePointPosition, 2000);
-
     let option = {
       showPoint: true,
       speed: 1,
       pitch: -20,
       rangeHeight: 1700,
-      endFlyRoamCallBack: endFlyRoamCallBack
+      endFlyRoamCallBack: endFlyRoamCallBack,
+      continuousTime: 1000,
+      continuousFun: continuousFun
     };
     ffCesium.flyRoamNew.startFly(lnglatArr, option);
   };
+
+  const continuousFun = () => {
+    // 获取坐标
+    var position = ffCesium.flyRoamNew.FlyRoamPoint.position.getValue(ffCesium.viewer.clock.currentTime)
+    console.log("continuousFun--position",position);
+
+  };
+
   const pauseFly = () => {
     ffCesium.flyRoamNew.pauseFly();
   };
