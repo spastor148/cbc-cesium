@@ -1,34 +1,21 @@
 import * as Cesium from "cesium";
-import PolygonEffectLogic from "./SubClass/PolygonEffectLogic";
+import PolylineEffectLogic from "./SubClass/PolylineEffectLogic.js";
 
-class PolygonEffectClass {
-  addWaterSurfaceEffectInfo= "叠加水面效果方法(addPolygonEffect)";
-  removeWaterSurfaceEffectInfo= "移除水面效果方法(removePolygonEffect)";
-  addWaterVolumeEffectInfo= "叠加水体效果方法(addPolygonEffect)";
-  removeWaterVolumeEffectInfo= "移除水体效果方法(removePolygonEffect)";
-  ffCesium;
-  polygonEffectLogic;
-  constructor(ffCesium) {
-    this.ffCesium = ffCesium;
-    this.polygonEffectLogic = new PolygonEffectLogic(ffCesium);
-  }
-  //叠加水面效果
-  addWaterSurfaceEffect(lnglatArr, option) {
-    return this.polygonEffectLogic.addWaterSurfaceEffect(lnglatArr, option);
-  }
-  //移除水面效果
-  removeWaterSurfaceEffect(polygonPrimitive) {
-    this.polygonEffectLogic.removeWaterSurfaceEffect(polygonPrimitive);
-  }
-  //叠加水体效果
-  addWaterVolumeEffect(lnglatArr, option) {
-    return this.polygonEffectLogic.addWaterVolumeEffect(lnglatArr, option);
-  }
-  //移除水面效果
-  removeWaterVolumeEffect(polygonPrimitive) {
-    this.polygonEffectLogic.removeWaterVolumeEffect(polygonPrimitive);
-  }
+class PolylineEffectClass {
+  viewer;
+  polylineEffectLogic;
+  addPolylineMovePointInfo= "叠加线的移动点效果方法(addPolygonEffect)";
 
-  
+  constructor(viewer) {
+    this.viewer = viewer;
+    this.polylineEffectLogic = new PolylineEffectLogic(viewer);
+  }
+  //叠加线的移动点效果方法(addPolylineMovePoint)
+  addPolylineMovePoint(movePointArr, option){
+    return this.polylineEffectLogic.addPolylineMovePoint(movePointArr, option);
+  }
+  removePolylineMovePoint(polylineMovePointArr){
+    this.polylineEffectLogic.removePolylineMovePoint(polylineMovePointArr);
+  }
 }
-export default PolygonEffectClass;
+export default PolylineEffectClass;

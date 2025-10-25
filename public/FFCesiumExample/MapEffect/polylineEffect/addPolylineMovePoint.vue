@@ -38,22 +38,25 @@ onMounted(() => {
 });
 let pointEntityArray = null;
 const addPolylineMovePointFun = () => {
+  console.log("ffCesium",ffCesium);
+
   let movePointArr = [
     [118.10755933952464, 24.499075709713203],
     [118.09021022013071, 24.46599111683894],
     [118.1359583350454, 24.43919395273641],
   ];
-  pointEntityArray = ffCesium.addPolylineMovePoint(movePointArr, {
+  pointEntityArray = ffCesium.polylineEffectClass.addPolylineMovePoint(movePointArr, {
     height: 150,
     color: "#FBFF65",
     alpha: 1,
     pixelSize: 6,
-    addType: "primitive", //可选值：entity,primitive
+    addType: "entity", //可选值：entity,primitive
   });
 };
 
 const removePolylineMovePointFun = () => {
-  ffCesium.removePolylineMovePoint(pointEntityArray);
+  
+  ffCesium.polylineEffectClass.removePolylineMovePoint(pointEntityArray);
 };
 </script>
 <style scoped>

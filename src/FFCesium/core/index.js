@@ -3,6 +3,8 @@ import * as Cesium from "cesium";
 import ParticleEffectClass from "./libs/MapEffect/ParticleEffectClass.js";//粒子效果类
 import WeatherEffectClass from "./libs/MapEffect/WeatherEffectClass.js";//天气效果类
 import PolygonEffectClass from "./libs/MapEffect/PolygonEffectClass.js";//面效果类
+import PolylineEffectClass from "./libs/MapEffect/PolylineEffectClass.js";//线效果类
+
 
 
 //地图接入
@@ -43,6 +45,7 @@ class FFCesium {
   particleEffectClass; //地图效果--粒子效果类
   weatherEffectClass; //地图效果--天气效果类
   polygonEffectClass;//地图效果--面效果类
+  polylineEffectClass;//地图效果--线效果类
   cesiumID;
   viewer;
   Cesium;
@@ -115,6 +118,8 @@ class FFCesium {
     this.particleEffectClass = new ParticleEffectClass(this); //地图效果--粒子效果类
     this.weatherEffectClass = new WeatherEffectClass(this);//地图效果--天气效果类
     this.polygonEffectClass=new PolygonEffectClass(this);//地图效果--面效果类
+    this.polylineEffectClass=new PolylineEffectClass(this.viewer);//地图效果--面效果类 
+
   }
   defaultMap() {
     let viewerOption = {
