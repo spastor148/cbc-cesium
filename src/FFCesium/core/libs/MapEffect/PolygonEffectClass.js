@@ -1,5 +1,5 @@
 import * as Cesium from "cesium";
-import PolygonEffectLogic from "./SubClass/PolygonEffectLogic";
+import PolygonEffectLogic from "./LogicClass/PolygonEffectLogic";
 
 class PolygonEffectClass {
   addWaterSurfaceEffectInfo= "叠加水面效果方法(addPolygonEffect)";

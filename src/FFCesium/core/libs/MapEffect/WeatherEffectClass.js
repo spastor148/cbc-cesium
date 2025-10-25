@@ -1,4 +1,4 @@
-import WeatherEffectLogic from "./SubClass/WeatherEffectLogic.js";
+import WeatherEffectLogic from "./LogicClass/WeatherEffectLogic.js";
 class WeatherEffectClass {
   addRainEffectInfo = "叠加雨效果方法(addRainEffect)";
   removeRainEffectInfo = "移除雨效果方法(removeRainEffect)";

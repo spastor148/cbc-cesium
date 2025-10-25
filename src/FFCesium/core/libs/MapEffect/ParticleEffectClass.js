@@ -1,4 +1,4 @@
-import ParticleEffectLogic from "./SubClass/ParticleEffectLogic.js";
+import ParticleEffectLogic from "./LogicClass/ParticleEffectLogic.js";
 class ParticleEffectClass {
   ffCesium;
   addParticleEffectInfo='叠加粒子效果方法(addParticleEffect)';

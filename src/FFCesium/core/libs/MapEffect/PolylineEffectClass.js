@@ -1,5 +1,5 @@
 import * as Cesium from "cesium";
-import PolylineEffectLogic from "./SubClass/PolylineEffectLogic.js";
+import PolylineEffectLogic from "./LogicClass/PolylineEffectLogic.js";
 
 class PolylineEffectClass {
   viewer;
