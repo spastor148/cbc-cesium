@@ -83,7 +83,7 @@ const addPolylineFlowFun = () => {
     url: "./images/FFCesium/MapEffect/polylineEffect/polylineEffect8.png",
     time: getTime(lnglatArr1, 5000),
   };
-  let polylineObj1 = ffCesium.addPolylineFlow(lnglatArr1, option);
+  let polylineObj1 = ffCesium.polylineEffectClass.addPolylineFlow(lnglatArr1, option);
   polygonArr.push(polylineObj1);
 
   //叠加线(短)
@@ -98,7 +98,7 @@ const addPolylineFlowFun = () => {
     url: "./images/FFCesium/MapEffect/polylineEffect/polylineEffect6.png",
     time: getTime(lnglatArr2, 500),
   };
-  let polylineObj2 = ffCesium.addPolylineFlow(lnglatArr2, option2);
+  let polylineObj2 = ffCesium.polylineEffectClass.addPolylineFlow(lnglatArr2, option2);
   polygonArr.push(polylineObj2);
 
   let lnglatArr3 = [
@@ -112,7 +112,7 @@ const addPolylineFlowFun = () => {
     url: "./images/FFCesium/MapEffect/polylineEffect/polylineEffect8.png",
     time: getTime(lnglatArr3, 5000),
   };
-  let polylineObj3 = ffCesium.addPolylineFlow(lnglatArr3, option3);
+  let polylineObj3 = ffCesium.polylineEffectClass.addPolylineFlow(lnglatArr3, option3);
   polygonArr.push(polylineObj3);
 };
 
@@ -132,7 +132,7 @@ const getTime = (lnglatArr1, speed) => {
 
 const removePolylineFlowFun = () => {
   polygonArr.forEach((item) => {
-    ffCesium.removePolylineFlow(item);
+    ffCesium.polylineEffectClass.removePolylineFlow(item);
   });
 };
 </script>

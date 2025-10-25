@@ -22,8 +22,7 @@ import { elementEdit } from "./libs/MapGather/elementEdit.js";
 //军事标绘采集与修改
 import { militaryPlottingGather } from "./libs/MapGather/militaryPlottingGather.js";
 import { militaryPlottingEdit } from "./libs/MapGather/militaryPlottingEdit.js";
-//地图效果
-import { polylineEffect } from "./libs/MapEffect/polylineEffect.js";
+
 
 //空间分析
 import { judgeRelation } from "./libs/SpatialAnalysis/judgeRelation.js";
@@ -74,8 +73,6 @@ class FFCesium {
       ...militaryPlottingGather,
       //军事标绘修改
       ...militaryPlottingEdit,
-      //地图效果
-      ...polylineEffect,
       //空间分析
       ...judgeRelation,
       //高级示例

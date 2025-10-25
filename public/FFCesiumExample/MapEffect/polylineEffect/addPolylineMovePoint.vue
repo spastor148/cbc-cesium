@@ -55,7 +55,6 @@ const addPolylineMovePointFun = () => {
 };
 
 const removePolylineMovePointFun = () => {
-  
   ffCesium.polylineEffectClass.removePolylineMovePoint(pointEntityArray);
 };
 </script>
