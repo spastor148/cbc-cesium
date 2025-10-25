@@ -1,12 +1,13 @@
 import * as Cesium from "cesium";
 
 class PolygonEffectLogic {
-  constructor(ffCesium) {
-    this.ffCesium = ffCesium;
+  viewer;
+  constructor(viewer) {
+    this.viewer = viewer;
   }
   //叠加水面效果
   addWaterSurfaceEffect(lnglatArr, option) {
-    let polygonPrimitive = this.ffCesium.viewer.scene.primitives.add(
+    let polygonPrimitive = this.viewer.scene.primitives.add(
       new Cesium.Primitive({
         geometryInstances: new Cesium.GeometryInstance({
           geometry: new Cesium.PolygonGeometry({
@@ -35,12 +36,12 @@ class PolygonEffectLogic {
   }
   //移除水面效果
   removeWaterSurfaceEffect(polygonPrimitive) {
-    this.ffCesium.viewer.scene.primitives.remove(polygonPrimitive);
+    this.viewer.scene.primitives.remove(polygonPrimitive);
   }
 
   //叠加水体效果
   addWaterVolumeEffect(lnglatArr, option) {
-    let polygonPrimitive = this.ffCesium.viewer.scene.primitives.add(
+    let polygonPrimitive = this.viewer.scene.primitives.add(
       new Cesium.Primitive({
         geometryInstances: new Cesium.GeometryInstance({
           geometry: new Cesium.PolygonGeometry({
@@ -62,7 +63,7 @@ class PolygonEffectLogic {
 
   //移除水面效果
   removeWaterVolumeEffect(polygonPrimitive) {
-    this.ffCesium.viewer.scene.primitives.remove(polygonPrimitive);
+    this.viewer.scene.primitives.remove(polygonPrimitive);
   }
 
   /**

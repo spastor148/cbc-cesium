@@ -6,11 +6,11 @@ class PolygonEffectClass {
   removeWaterSurfaceEffectInfo= "移除水面效果方法(removePolygonEffect)";
   addWaterVolumeEffectInfo= "叠加水体效果方法(addPolygonEffect)";
   removeWaterVolumeEffectInfo= "移除水体效果方法(removePolygonEffect)";
-  ffCesium;
+  viewer;
   polygonEffectLogic;
-  constructor(ffCesium) {
-    this.ffCesium = ffCesium;
-    this.polygonEffectLogic = new PolygonEffectLogic(ffCesium);
+  constructor(viewer) {
+    this.viewer = viewer;
+    this.polygonEffectLogic = new PolygonEffectLogic(viewer);
   }
   //叠加水面效果
   addWaterSurfaceEffect(lnglatArr, option) {

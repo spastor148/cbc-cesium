@@ -1,9 +1,9 @@
 import * as Cesium from "cesium";
 class WeatherEffectLogic {
-  ffCesium;
-  ffCesiumCloudCollection; //云集合
-  constructor(ffCesium) {
-    this.ffCesium = ffCesium;
+  viewer;
+  cloudCollection; //云集合
+  constructor(viewer) {
+    this.viewer = viewer;
   }
   //叠加雨效果
   addRainEffect(option) {
@@ -42,12 +42,12 @@ class WeatherEffectLogic {
         rainSpeed: option.rainSpeed //雨长度
       }
     });
-    this.ffCesium.viewer.scene.postProcessStages.add(rainEffect);
+    this.viewer.scene.postProcessStages.add(rainEffect);
     return rainEffect;
   }
   //移除雨效果
   removeRainEffect(rainEffect) {
-    this.ffCesium.viewer.scene.postProcessStages.remove(rainEffect);
+    this.viewer.scene.postProcessStages.remove(rainEffect);
   }
 
   //叠加雪效果
@@ -88,13 +88,13 @@ class WeatherEffectLogic {
         snowSpeed: option.snowSpeed //雪速
       }
     });
-    this.ffCesium.viewer.scene.postProcessStages.add(snowEffect);
+    this.viewer.scene.postProcessStages.add(snowEffect);
     return snowEffect;
   }
 
   //移除雪效果
   removeSnowEffect(snowEffect) {
-    this.ffCesium.viewer.scene.postProcessStages.remove(snowEffect);
+    this.viewer.scene.postProcessStages.remove(snowEffect);
   }
   //叠加雾效果
   addFogEffect(option) {
@@ -154,24 +154,24 @@ class WeatherEffectLogic {
         fogColor: Cesium.Color.WHITE
       }
     });
-    this.ffCesium.viewer.scene.postProcessStages.add(fogEffect);
+    this.viewer.scene.postProcessStages.add(fogEffect);
     return fogEffect;
   }
   //移除雾效果
   removeFogEffect(fogEffect) {
-    this.ffCesium.viewer.scene.postProcessStages.remove(fogEffect);
+    this.viewer.scene.postProcessStages.remove(fogEffect);
   }
   //叠加云效果
   addCloudEffect(option) {
-    if (!this.ffCesiumCloudCollection) {
-      this.ffCesiumCloudCollection = this.ffCesium.viewer.scene.primitives.add(
+    if (!this.cloudCollection) {
+      this.cloudCollection = this.viewer.scene.primitives.add(
         new Cesium.CloudCollection({
           noiseDetail: 16.0,
           noiseOffset: Cesium.Cartesian3.ZERO
         })
       );
     }
-    let cloud = this.ffCesiumCloudCollection.add({
+    let cloud = this.cloudCollection.add({
       position: Cesium.Cartesian3.fromDegrees(option.lng, option.lat, option.height),
       scale: new Cesium.Cartesian2(option.scaleX, option.scaleY),
       slice: option.slice,
@@ -182,7 +182,7 @@ class WeatherEffectLogic {
   }
   //移除云效果
   removeCloudEffect() {
-    this.ffCesiumCloudCollection.removeAll();
+    this.cloudCollection.removeAll();
   }
 }
 
