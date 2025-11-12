@@ -2,8 +2,15 @@ import * as Cesium from "cesium";
 
 class MapClass {
   mapUrl = "http://113.0.120.80:8003/YTBingmap/{z}/{x}/{y}.jpg";
-  qxsyUrl = "http://113.0.120.80:8003/YTQSQXSY2/tileset.json";
-  qxsyHeight = 182;
+  qxsyArr = [
+    "http://113.0.120.80:8003/YTQSQXSY2/tileset.json",//渠首
+    "http://113.0.120.80:8003/YTFSGQ/tileset.json",//伏胜干渠-倾斜
+    "http://113.0.120.80:8003/YTBGQ1/tileset.json", //北干渠1-11段
+    "http://113.0.120.80:8003/YTTYGQ/tileset.json",//汤原干渠倾斜摄影
+    "http://113.0.120.80:8003/YTHZJGJH/tileset.json",//合作节-格节河-倾斜
+  ];
+
+  qxsyHeight = [182,121,135,150,125];
   terrainUrl = "http://113.0.120.80:8003/terrain";
 
   centerOption = {
@@ -63,14 +70,110 @@ class MapClass {
     };
     var imgProvider = new Cesium.UrlTemplateImageryProvider(mapOption);
     this.viewer.imageryLayers.addImageryProvider(imgProvider);
+
+    //叠加注记服务
+    // 添加注记图层
+    var zjMapOption = {
+      url: "http://t0.tianditu.gov.cn/cia_c/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=cia&tileMatrixSet=c&TileMatrix={level}&TileRow={y}&TileCol={x}&style=default&tk=e7a6694e4622933c3a2bd66ba10233aa",
+      customTags: {
+        level: function (imageryProvider, x, y, level) {
+          //console.log("级别：", level);
+          return level + 1;
+        }
+      },
+      tilingScheme: new Cesium.GeographicTilingScheme(),
+      minimumLevel: 0, //最小层级
+      maximumLevel: 17
+    };
+    var zjProvider = new Cesium.UrlTemplateImageryProvider(zjMapOption);
+    this.viewer.imageryLayers.addImageryProvider(zjProvider);
+
     //叠加倾斜摄影
-    this.addPhotographyOrigin(this.qxsyUrl);
+    this.qxsyArr.forEach((urlItem,index) => {
+      this.addPhotographyOrigin(urlItem,index);
+    });
     //叠加地形
     this.addTerrain(this.terrainUrl);
     return this.viewer;
   }
 
+  /**
+   * 不断获取当前相机的经纬度、高度和偏航角。
+   *
+   * @returns {Object} 包含经度、纬度、高度和偏航角的对象。
+   */
+  getCameraEvent() {
+    let viewer = this.viewer;
+    let option = {};
+    window.setInterval(() => {
+      // 获取相机位置
+      var cameraPosition = viewer.camera.position;
+      var ellipsoid = viewer.scene.globe.ellipsoid;
+      var cartesian3 = new Cesium.Cartesian3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+      var cartographic = ellipsoid.cartesianToCartographic(cartesian3);
+      var lat = Cesium.Math.toDegrees(cartographic.latitude);
+      var lng = Cesium.Math.toDegrees(cartographic.longitude);
+      var height = cartographic.height;
+      option.lng = lng;
+      option.lat = lat;
+      option.height = height;
+      //获取倾斜角度
+      var pitch = Cesium.Math.toDegrees(viewer.camera.pitch);
+      var heading = Cesium.Math.toDegrees(viewer.camera.heading);
+      var roll = Cesium.Math.toDegrees(viewer.camera.roll);
+      var heightInMeters = viewer.camera.positionCartographic.height;
+      option.lng = lng;
+      option.lat = lat;
+      option.height = heightInMeters;
+      option.pitch = pitch;
+      option.heading = heading;
+      option.roll = roll;
+      console.log("getCameraEvent--当前相机位置信息--option", option);
+    }, 2000);
+  }
+
+  setView(option) {
+    this.viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(option.x, option.y, option.z),
+      orientation: {
+        // 指向
+        heading: Cesium.Math.toRadians(option.heading),
+        // 视角
+        pitch: Cesium.Math.toRadians(option.pitch),
+        roll: 0.0
+      }
+    });
+  }
+
+  flyTo(flyLocation) {
+    let the = this;
+    let position = Cesium.Cartesian3.fromDegrees(flyLocation.x, flyLocation.y, flyLocation.z);
+    let flyToEntity = new Cesium.Entity({
+      position: position,
+      point: {
+        pixelSize: 0
+      }
+    });
+    this.viewer.entities.add(flyToEntity);
+    const flyPromise = this.viewer.flyTo(flyToEntity, {
+      duration: 0.75,
+      offset: {
+        heading: Cesium.Math.toRadians(flyLocation.heading),
+        pitch: Cesium.Math.toRadians(flyLocation.pitch),
+        range: flyLocation.range
+      }
+    });
+    flyPromise.then(function () {
+      the.viewer.entities.remove(flyToEntity);
+      flyToEntity = null;
+    });
+  }
+
   addModelLayer(modelParam) {
+    const position = Cesium.Cartesian3.fromDegrees(130.20092536130795, 46.97871562757069, 104.977274214235);
+    const radius = 77;
+    const boundingSphereTemp = new Cesium.BoundingSphere(position, radius);
+
     modelParam.option = {
       maximumMemoryUsage: 100, //不可设置太高，目标机子空闲内存值以内，防止浏览器过于卡
       maximumScreenSpaceError: 20, //用于驱动细节细化级别的最大屏幕空间错误;较高的值可提供更好的性能，但视觉质量较低。
@@ -86,7 +189,8 @@ class MapClass {
       dynamicScreenSpaceError: true,
       dynamicScreenSpaceErrorDensity: 0.00278,
       dynamicScreenSpaceErrorFactor: 4.0,
-      dynamicScreenSpaceErrorHeightFalloff: 0.25
+      dynamicScreenSpaceErrorHeightFalloff: 0.25,
+      boundingSphere: boundingSphereTemp
     };
     console.log("addModelLayer--modelParam", modelParam);
     let promise = this.add3DTile(modelParam);
@@ -99,15 +203,16 @@ class MapClass {
       the.viewer.scene.primitives.add(tileset);
       console.log("add3DTile--定位完成");
       let lightColor = "2.2";
-      tileset._customShader = new Cesium.CustomShader({
-        fragmentShaderText:
-          `
-                void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
-                        material.diffuse = material.diffuse * ` +
-          lightColor +
-          `;
-            }`
-      });
+      // tileset._customShader = new Cesium.CustomShader({
+      //   fragmentShaderText:
+      //     `
+      //           void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+      //                   material.diffuse = material.diffuse * ` +
+      //     lightColor +
+      //     `;
+      //       }`
+      // });
+      //位置移动
       the.update3dtilesMaxtrix(tileset, modelParam.location);
       return tileset;
     } catch (error) {
@@ -155,7 +260,7 @@ class MapClass {
   }
 
   //叠加倾斜摄影
-  addPhotographyOrigin() {
+  addPhotographyOrigin(url,index) {
     let the = this;
     console.log("叠加倾斜摄影");
     if (this.photographyLayer != null) {
@@ -179,7 +284,7 @@ class MapClass {
       dynamicScreenSpaceErrorFactor: 4.0,
       dynamicScreenSpaceErrorHeightFalloff: 0.25
     };
-    let promise = this.addObliquePhotography(this.qxsyUrl, option);
+    let promise = this.addObliquePhotography(url, option);
     console.log("开始叠加倾斜摄影");
     promise.then((result) => {
       let lightColor = "1.2";
@@ -192,16 +297,19 @@ class MapClass {
           `;
       }`
       });
-      the.setHeight(result, the.qxsyHeight);
+      the.setHeight(result, the.qxsyHeight[index]);
       the.photographyLayer = result;
       console.log("成功叠加倾斜摄影--the.photographyLayer1", the.photographyLayer);
-
     });
   }
 
-  clippingPolygons(lnglatArr) {
-    console.log("clippingPolygons--lnglatArr",lnglatArr);
-    this.photographyLayer.clippingPolygons=undefined;
+  cancelCut() {
+    //this.photographyLayer.clippingPolygons=undefined;
+    let lnglatArr = [
+      [129.6889232185286, 46.68809272443143],
+      [129.688701265845, 46.68775642102096],
+      [129.68938566516817, 46.687726311283896]
+    ];
     this.photographyLayer.clippingPolygons = new Cesium.ClippingPolygonCollection({
       polygons: [
         new Cesium.ClippingPolygon({
@@ -211,7 +319,20 @@ class MapClass {
       inverse: false //true，显示点集合区域，去掉外部，false，挖掉点集合区域
     });
     console.log("成功叠加倾斜摄影--the.photographyLayer2", this.photographyLayer);
+  }
 
+  clippingPolygons(lnglatArr) {
+    console.log("clippingPolygons--lnglatArr", lnglatArr);
+    this.photographyLayer.clippingPolygons = undefined;
+    this.photographyLayer.clippingPolygons = new Cesium.ClippingPolygonCollection({
+      polygons: [
+        new Cesium.ClippingPolygon({
+          positions: Cesium.Cartesian3.fromDegreesArray(lnglatArr.flat())
+        })
+      ],
+      inverse: false //true，显示点集合区域，去掉外部，false，挖掉点集合区域
+    });
+    console.log("成功叠加倾斜摄影--the.photographyLayer2", this.photographyLayer);
   }
 
   setHeight(tileset, height) {

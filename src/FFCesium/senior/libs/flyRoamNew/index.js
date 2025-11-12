@@ -164,7 +164,7 @@ class FlyRoamNew {
     }
     //console.log("bearing123123", bearing);
     if (bearing) {
-      this.currentBearing = bearing;
+      this.currentBearing = Number(bearing);
       let position = Cesium.Cartesian3.fromDegrees(startPoint[0], startPoint[1], 10);
       viewer.camera.setView({
         destination: position,

@@ -10,6 +10,7 @@ import * as Cesium from 'cesium'
 import CoordTransform from './CoordTransform'
  
 class EditB3DM {
+
   /**
    * 3dtiles模型编辑
    * @param {Viewer} viewer
@@ -39,18 +40,35 @@ class EditB3DM {
   getParams() {
     return this._params
   }
+  getCenter(){
+    let lng=130.20092536130795
+    let lat=46.97871562757069
+    let alt=104.977274214235
+    let positionTemp=Cesium.Cartesian3.fromDegrees(lng, lat, alt)
+    return positionTemp
+  }
   initParam() {
     this.removeAllTools()
     let b3dm = this._b3dm
+    console.log("initParam--b3dm",b3dm);
     const viewer = this._viewer
-    const length = b3dm.boundingSphere.radius / 3
+    const length = b3dm.boundingSphere.radius / 1
+    console.log("initParam--this.getCenter()",this.getCenter());
+
     const originDegree = CoordTransform.transformCartesianToWGS84(
       viewer,
       b3dm.boundingSphere.center
     )
+    // const originDegree = CoordTransform.transformCartesianToWGS84(
+    //   viewer,
+    //   this.getCenter()
+    // )
+    //const originDegree = this.getCenter();
+    console.log("initParam--originDegree",originDegree);
     this._params.tx = originDegree.lng
     this._params.ty = originDegree.lat
     this._params.tz = originDegree.alt
+    console.log("initParam--this._params",this._params);
     return { originDegree, length }
   }
   /**
@@ -154,7 +172,7 @@ class EditB3DM {
   updateLineArrow(b3dm) {
     this.removeCoordArrows()
     const viewer = this._viewer
-    const length = b3dm.boundingSphere.radius / 3
+    const length = b3dm.boundingSphere.radius / 1
     const originDegree = CoordTransform.transformCartesianToWGS84(
       viewer,
       b3dm.boundingSphere.center
@@ -248,6 +266,7 @@ class EditB3DM {
           $this._params.rx += _rx
           $this._params.ry += _ry
           $this._params.rz += _rz
+          console.log("LEFT_UP--$this._params.tx",$this._params.tx);
           //为viewer绑定LEFT_UP事件监听器（执行函数，监听的事件）
           $this._handler.removeInputAction(
             Cesium.ScreenSpaceEventType.MOUSE_MOVE
@@ -259,6 +278,7 @@ class EditB3DM {
   }
   //更新模型位置
   updateModel(params, _tx, _ty, _tz, _rx, _ry, _rz) {
+    console.log('更新模型位置',params) 
     let mx = Cesium.Matrix3.fromRotationX(
       Cesium.Math.toRadians(params.rx + _rx)
     )
@@ -289,6 +309,7 @@ class EditB3DM {
   }
   //绘制箭头
   initLineArrow(originDegree, targetDegree, length) {
+    console.log("initLineArrow--originDegree, targetDegree",originDegree, targetDegree);
     const arrows = new Cesium.PolylineCollection()
     const xPos = [
       originDegree.lng,
