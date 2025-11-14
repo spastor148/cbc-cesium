@@ -71,6 +71,16 @@ class MapClass {
     var imgProvider = new Cesium.UrlTemplateImageryProvider(mapOption);
     this.viewer.imageryLayers.addImageryProvider(imgProvider);
 
+    var mapOption1 = {
+      url: "http://113.0.120.80:8003/YTDOM220/{z}/{x}/{y}.png",
+      minimumLevel: 0, //最小层级
+      maximumLevel: 19,
+      tileWidth: 256,
+      tileHeight: 256
+    };
+    var imgProvider1 = new Cesium.UrlTemplateImageryProvider(mapOption1);
+    this.viewer.imageryLayers.addImageryProvider(imgProvider1);
+
     //叠加注记服务
     // 添加注记图层
     var zjMapOption = {
@@ -103,6 +113,7 @@ class MapClass {
    * @returns {Object} 包含经度、纬度、高度和偏航角的对象。
    */
   getCameraEvent() {
+    console.log("getCameraEvent");
     let viewer = this.viewer;
     let option = {};
     window.setInterval(() => {
