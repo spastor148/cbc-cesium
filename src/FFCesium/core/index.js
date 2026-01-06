@@ -146,12 +146,17 @@ class FFCesium {
     //得加高德标准地图
     var imgProvider = new Cesium.UrlTemplateImageryProvider({ url: "https://webst04.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}" });
     let mapLayer = this.viewer.imageryLayers.addImageryProvider(imgProvider);
-    this.setView({
-      lng: 118.135,
-      lat: 24.339,
-      height: 20000,
-      pitchRadiu: -50
-    });
+    let optionTemp = {
+      destination: Cesium.Cartesian3.fromDegrees(118.135, 24.339, 20000),
+      orientation: {
+        // 指向
+        heading: Cesium.Math.toRadians(0, 0),
+        // 视角
+        pitch: Cesium.Math.toRadians(-50),
+        roll: 0.0
+      }
+    };
+    this.viewer.camera.setView(optionTemp);
     return mapLayer;
   }
 
