@@ -27,7 +27,7 @@ import { militaryPlottingEdit } from "./libs/MapGather/militaryPlottingEdit.js";
 //空间分析
 import { judgeRelation } from "./libs/SpatialAnalysis/judgeRelation.js";
 //高级示例
-import { addType } from "./libs/AdvancedExamples/addType.js";
+import AddTypeClass from "./libs/AdvancedExamples/AddTypeClass.js";
 //地图通用工具包
 import { mapUtil } from "./libs/mapUtil.js";
 //其他
@@ -45,6 +45,7 @@ class FFCesium {
   weatherEffectClass; //地图效果--天气效果类
   polygonEffectClass;//地图效果--面效果类
   polylineEffectClass;//地图效果--线效果类
+  addTypeClass;//高级示例--AddType类
   cesiumID;
   viewer;
   Cesium;
@@ -75,8 +76,6 @@ class FFCesium {
       ...militaryPlottingEdit,
       //空间分析
       ...judgeRelation,
-      //高级示例
-      ...addType,
       //地图通用工具包
       ...mapUtil,
       //其他
@@ -115,7 +114,8 @@ class FFCesium {
     this.particleEffectClass = new ParticleEffectClass(this.viewer); //地图效果--粒子效果类
     this.weatherEffectClass = new WeatherEffectClass(this.viewer);//地图效果--天气效果类
     this.polygonEffectClass = new PolygonEffectClass(this.viewer);//地图效果--面效果类
-    this.polylineEffectClass = new PolylineEffectClass(this.viewer);//地图效果--面效果类 
+    this.polylineEffectClass = new PolylineEffectClass(this.viewer);//地图效果--线效果类 
+    this.addTypeClass = new AddTypeClass(this.viewer);//高级示例--AddType类
 
   }
   defaultMap() {
