@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addRectangleEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addRectangleEntityFun">
       叠加矩形实体
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeRectangleEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removeRectangleEntityFun">
       移除矩形实体
     </button>
   </div>
@@ -29,16 +23,20 @@ const addRectangleEntityFun = () => {
   coordinates.west = 118.0850887298584;
   coordinates.south = 24.439001083374023;
   coordinates.east = 118.1044813816513;
-  coordinates.north = 24.451483144361173;
+  let lngLatHeight = {}; // Changed from coordinates to lngLatHeight
+  lngLatHeight.west = 118.0850887298584;
+  lngLatHeight.south = 24.439001083374023;
+  lngLatHeight.east = 118.1044813816513;
+  lngLatHeight.north = 24.451483144361173;
   let option = {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  rectangleObj = ffCesium.addRectangleEntity(coordinates, option);
-  console.log("rectangleObj", rectangleObj);
+  RectangleEntity = ffCesium.entityClass.addRectangleEntity(lngLatHeight, option); // Changed method call and variable name
+  console.log("RectangleEntity", RectangleEntity); // Updated console log
 };
 const removeRectangleEntityFun = () => {
-  ffCesium.removeFFEntity(rectangleObj);
+  ffCesium.entityClass.removeFFEntity(RectangleEntity); // Changed method call and argument
 };
 </script>
 <style scoped>

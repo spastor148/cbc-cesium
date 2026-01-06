@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="setViewFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="setViewFun">
       定位
     </button>
   </div>
@@ -23,7 +20,7 @@ const setViewFun = () => {
     height: 2000,
     pitchRadiu: -50,
   };
-  ffCesium.setView(option);
+  ffCesium.mapActionClass.setView(option);
 };
 </script>
 <style scoped>

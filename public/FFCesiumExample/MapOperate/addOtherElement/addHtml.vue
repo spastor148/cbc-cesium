@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addHtmlFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addHtmlFun">
       叠加HTML
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeHtmlFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removeHtmlFun">
       移除HTML
     </button>
   </div>
@@ -36,7 +30,7 @@ const addHtmlFun = () => {
   let option = {};
   option.offset = { top: 0, left: 0 };
   option.zIndex = 10;
-  let htmlOverlay = ffCesium.addHtml(lngLatHeight, html, option);
+  htmlOverlay = ffCesium.elementClass.addHtml(lngLatHeight, html, option);
 
   window["showInfo"] = (valueParam) => {
     console.log("showInfo--valueParam", valueParam);
@@ -49,7 +43,7 @@ const showInfo = (valueParam) => {
 };
 
 const removeHtmlFun = () => {
-  ffCesium.removeHtml(htmlOverlay);
+  ffCesium.elementClass.removeHtml(htmlOverlay);
 };
 </script>
 <style scoped>

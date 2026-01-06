@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addPolygonEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addPolygonEntityFun">
       叠加面实体
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removePolylineEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removePolylineEntityFun">
       移除面实体
     </button>
   </div>
@@ -35,11 +29,12 @@ const addPolygonEntityFun = () => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  polygonObj = ffCesium.addPolygonEntity(lnglatArr, option);
-  console.log("polygonObj", polygonObj);
+  // Corrected line based on the instruction and common usage, assuming lnglatArr is the correct variable
+  PolygonEntity = ffCesium.entityClass.addPolygonEntity(lnglatArr, option);
+  console.log("PolygonEntity", PolygonEntity); // Changed log variable
 };
-const removePolylineEntityFun = () => {
-  ffCesium.removeFFEntity(polygonObj);
+const removePolygonEntityFun = () => { // Renamed function
+  ffCesium.entityClass.removeFFEntity(PolygonEntity); // Changed function call and variable
 };
 </script>
 <style scoped>

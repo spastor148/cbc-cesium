@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addPolygonPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addPolygonPrimitiveFun">
       叠加面图元
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removePolygonPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removePolygonPrimitiveFun">
       移除面图元
     </button>
   </div>
@@ -35,10 +29,10 @@ const addPolygonPrimitiveFun = () => {
     color: "#FFFF00",
     alpha: 1,
   };
-  polygonPrimitive = ffCesium.addPolygonPrimitive(lnglatArr, option);
+  polygonPrimitive = ffCesium.primitiveClass.addPolygonPrimitive(lnglatArr, option);
 };
 const removePolygonPrimitiveFun = () => {
-  ffCesium.removeFFPrimitive(polygonPrimitive);
+  ffCesium.primitiveClass.removeFFPrimitive(polygonPrimitive);
 };
 </script>
 <style scoped>

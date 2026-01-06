@@ -1,15 +1,9 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="openCompass"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="openCompass">
       打开比例尺
     </button>
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="closeCompass"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="closeCompass">
       关闭比例尺
     </button>
   </div>
@@ -23,10 +17,10 @@ onMounted(() => {
   ffCesium = new FFCesium("cesiumContainer");
 });
 const openCompass = () => {
-  ffCesium.openScaleTool({ left: "50px", bottom: "15%" });
+  ffCesium.mapToolClass.openScaleTool({ left: "50px", bottom: "15%" });
 };
 const closeCompass = () => {
-  ffCesium.closeScaleTool();
+  ffCesium.mapToolClass.closeScaleTool();
 };
 </script>
 <style scoped>

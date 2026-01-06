@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addPolylineEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addPolylineEntityFun">
       叠加线实体
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removePolylineEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removePolylineEntityFun">
       移除线实体
     </button>
   </div>
@@ -35,10 +29,10 @@ const addPolylineEntityFun = () => {
     color: "#FFFF00",
     alpha: 1,
   };
-  polylineEntity = ffCesium.addPolylineEntity(lnglatArr, option);
+  polylineEntity = ffCesium.entityClass.addPolylineEntity(lnglatArr, option);
 };
 const removePolylineEntityFun = () => {
-  ffCesium.removeFFEntity(polylineEntity);
+  ffCesium.entityClass.removeFFEntity(polylineEntity);
 };
 </script>
 <style scoped>

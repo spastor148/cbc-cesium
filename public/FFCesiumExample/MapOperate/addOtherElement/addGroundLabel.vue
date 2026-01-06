@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addGroundLabelFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addGroundLabelFun">
       叠加贴地文字
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeGroundLabelFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removeGroundLabelFun">
       移除贴地文字
     </button>
   </div>
@@ -31,11 +25,11 @@ const addGroundLabelFun = () => {
   option.zIndex = 10;
   option.text = "河流名称";
   option.color = "#FFFF00";
-  lableObj = ffCesium.addGroundLabel(lngLatHeight, option);
+  lableObj = ffCesium.elementClass.addGroundLabel(lngLatHeight, option);
 };
 
 const removeGroundLabelFun = () => {
-  ffCesium.removeGroundLabel(lableObj);
+  ffCesium.elementClass.removeGroundLabel(lableObj);
 };
 </script>
 <style scoped>

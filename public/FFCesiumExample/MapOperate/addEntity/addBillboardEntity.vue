@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addBillboardEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addBillboardEntityFun">
       叠加图标（广告牌）
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeBillboardEntityFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removeBillboardEntityFun">
       移除图标（广告牌）
     </button>
   </div>
@@ -30,10 +24,10 @@ const addBillboardEntityFun = () => {
     image: "./images/FFCesium/MapOperate/addOtherElement/favicon.ico",
     pixelOffset: [0, -50], //数组第一个元素是左右方向，负值向左，第二个元素是上下方向，负值向上，
   };
-  BillboardEntity = ffCesium.addBillboardEntity(lngLatHeight, option);
+  BillboardEntity = ffCesium.entityClass.addBillboardEntity(lngLatHeight, option);
 };
 const removeBillboardEntityFun = () => {
-  ffCesium.removeFFEntity(BillboardEntity);
+  ffCesium.entityClass.removeFFEntity(BillboardEntity);
 };
 </script>
 <style scoped>

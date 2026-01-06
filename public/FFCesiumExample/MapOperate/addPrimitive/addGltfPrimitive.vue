@@ -1,30 +1,18 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addGltfPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addGltfPrimitiveFun">
       叠加gltf模型
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeGltfPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removeGltfPrimitiveFun">
       移除gltf模型
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 200px; z-index: 999"
-      @click="addGlbPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 200px; z-index: 999" @click="addGlbPrimitiveFun">
       叠加glb模型
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 250px; z-index: 999"
-      @click="removeGlbPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 250px; z-index: 999" @click="removeGlbPrimitiveFun">
       移除glb模型
     </button>
   </div>
@@ -48,13 +36,10 @@ const addGltfPrimitiveFun = () => {
     minimumPixelSize: 128,
     maximumScale: 100,
   };
-  let promise = ffCesium.addGltfPrimitive(lngLatHeight, option);
-  promise.then((result) => {
-    gltfPrimitive = result;
-  });
+  gltfPrimitive = ffCesium.primitiveClass.addGltfPrimitive(lngLatHeight, option);
 };
 const removeGltfPrimitiveFun = () => {
-  ffCesium.removeFFPrimitive(gltfPrimitive);
+  ffCesium.primitiveClass.removeFFPrimitive(gltfPrimitive);
 };
 
 let glbPrimitive = null;

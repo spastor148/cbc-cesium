@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addPolylinePrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addPolylinePrimitiveFun">
       叠加线图元
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removePolylinePrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removePolylinePrimitiveFun">
       移除线图元
     </button>
   </div>
@@ -35,10 +29,10 @@ const addPolylinePrimitiveFun = () => {
     color: "#FFFF00",
     alpha: 1,
   };
-  polylinePrimitive = ffCesium.addPolylinePrimitive(lnglatArr, option);
+  polylinePrimitive = ffCesium.primitiveClass.addPolylinePrimitive(lnglatArr, option);
 };
 const removePolylinePrimitiveFun = () => {
-  ffCesium.removeFFPrimitive(polylinePrimitive);
+  ffCesium.primitiveClass.removeFFPrimitive(polylinePrimitive);
 };
 </script>
 <style scoped>

@@ -1,15 +1,9 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="openMapInfoFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="openMapInfoFun">
       打开地图信息
     </button>
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="closeMapInfoFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="closeMapInfoFun">
       关闭地图信息
     </button>
   </div>
@@ -24,10 +18,10 @@ onMounted(() => {
   ffCesium = new FFCesium("cesiumContainer");
 });
 const openMapInfoFun = () => {
-  ffCesium.openMapInfo({ left: "50px", bottom: "5%" });
+  ffCesium.mapToolClass.openMapInfo({ left: "50px", bottom: "5%" });
 };
 const closeMapInfoFun = () => {
-  ffCesium.closeMapInfo();
+  ffCesium.mapToolClass.closeMapInfo();
 };
 </script>
 <style scoped>

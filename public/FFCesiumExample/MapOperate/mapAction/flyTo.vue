@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="flyToFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="flyToFun">
       开始飞行
     </button>
   </div>
@@ -24,7 +21,7 @@ const flyToFun = () => {
     pitchRadiu: -50,
     time: 5,
   };
-  ffCesium.flyTo(option, callback);
+  ffCesium.mapActionClass.flyTo(option, callback);
 };
 const callback = () => {
   console.log("完成飞跃");

@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="createBezierSplineFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="createBezierSplineFun">
       生成贝塞尔曲线
     </button>
   </div>
@@ -35,14 +32,14 @@ onMounted(() => {
     height: 5000,
     pitchRadiu: -50,
   };
-  ffCesium.setView(option);
+  ffCesium.mapActionClass.setView(option);
 
   let option1 = {
     width: 5,
     color: "#FFFF00",
     alpha: 1,
   };
-  let polylineEntity = ffCesium.addPolylineEntity(lnglatArr, option1);
+  let polylineEntity = ffCesium.entityClass.addPolylineEntity(lnglatArr, option1);
 
   polylineEntity.position.setInterpolationOptions({
     interpolationDegree: 2,
@@ -52,7 +49,7 @@ onMounted(() => {
 const createBezierSplineFun = () => {
   let lnglatArrTemp = ffCesium.getLngLatArrFromLngLatHeightArr(lnglatArr);
   console.log("lnglatArrTemp", lnglatArrTemp);
-  let newlnglatArr = ffCesium.createBezierSpline(lnglatArrTemp);
+  let newlnglatArr = ffCesium.mapToolClass.createBezierSpline(lnglatArrTemp);
   for (let i = 0; i < newlnglatArr.length; i++) {
     newlnglatArr[i][2] = 100;
   }
@@ -63,7 +60,7 @@ const createBezierSplineFun = () => {
     color: "#FF0000",
     alpha: 1,
   };
-  let polylinePrimitive = ffCesium.addPolylinePrimitive(newlnglatArr, option1);
+  let polylinePrimitive = ffCesium.primitiveClass.addPolylinePrimitive(newlnglatArr, option1);
 };
 </script>
 <style scoped>

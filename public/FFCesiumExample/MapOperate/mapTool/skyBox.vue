@@ -1,23 +1,14 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 50px; z-index: 999"
-      @click="addSkyBoxFun1"
-    >
+    <button style="position: absolute; left: 100px; top: 50px; z-index: 999" @click="addSkyBoxFun1">
       蓝天
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addSkyBoxFun2"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addSkyBoxFun2">
       晚霞
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeSkyBoxFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removeSkyBoxFun">
       移除天空盒
     </button>
   </div>
@@ -47,8 +38,8 @@ onMounted(() => {
     },
   }; //初始化
   ffCesium = new FFCesium("cesiumContainer", viewerOption);
-  ffCesium.addTdtImgLayer();
-  ffCesium.setView({
+  ffCesium.mapServerClass.addTdtImgLayer();
+  ffCesium.mapActionClass.setView({
     lng: 118.135,
     lat: 24.339,
     height: 20000,
@@ -68,7 +59,7 @@ const addSkyBoxFun1 = () => {
   option.pz = "./images/FFCesium/MapOperate/mapTool/近地天空盒/lantian/Up.jpg";
   option.nz =
     "./images/FFCesium/MapOperate/mapTool/近地天空盒/lantian/Down.jpg";
-  ffCesium.addSkyBox(option);
+  ffCesium.mapToolClass.addSkyBox(option);
 };
 const addSkyBoxFun2 = () => {
   let option = {};
@@ -84,10 +75,10 @@ const addSkyBoxFun2 = () => {
     "./images/FFCesium/MapOperate/mapTool/近地天空盒/wanxia/SunSetUp.png";
   option.nz =
     "./images/FFCesium/MapOperate/mapTool/近地天空盒/wanxia/SunSetDown.png";
-  ffCesium.addSkyBox(option);
+  ffCesium.mapToolClass.addSkyBox(option);
 };
 const removeSkyBoxFun = () => {
-  ffCesium.removeSkyBox();
+  ffCesium.mapToolClass.removeSkyBox();
 };
 </script>
 <style scoped>

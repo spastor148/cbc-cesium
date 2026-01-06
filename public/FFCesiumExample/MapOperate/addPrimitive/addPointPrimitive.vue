@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addPointPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addPointPrimitiveFun">
       叠加点图元
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removePointPrimitiveFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removePointPrimitiveFun">
       移除点图元
     </button>
   </div>
@@ -33,10 +27,10 @@ const addPointPrimitiveFun = () => {
     outlineWidth: 2,
     outlineColor: "#0000FF",
   };
-  pointPrimitive = ffCesium.addPointPrimitive(lngLatHeight, option);
+  pointPrimitive = ffCesium.primitiveClass.addPointPrimitive(lngLatHeight, option);
 };
 const removePointPrimitiveFun = () => {
-  ffCesium.removeFFPrimitive(pointPrimitive);
+  ffCesium.primitiveClass.removeFFPrimitive(pointPrimitive);
 };
 </script>
 <style scoped>
