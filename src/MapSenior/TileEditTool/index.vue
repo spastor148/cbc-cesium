@@ -45,14 +45,14 @@
     //let modelParam=modelDataArr[3];//格节河节制闸模型
     //let modelParam = modelDataArr[4]; //红旗沟节制闸
     //let modelParam = modelDataArr[5]; //香兰河节制闸
-    //let modelParam = modelDataArr[6]; //阿凌达河节制闸
+    let modelParam = modelDataArr[6]; //阿凌达河节制闸
     //let modelParam = modelDataArr[7]; //北干渠莲农闸
     //let modelParam = modelDataArr[8]; //红丰抽水站
     //let modelParam = modelDataArr[9]; //解放泵站
     // let modelParam = modelDataArr[10]; //景阳交叉节制闸
     //let modelParam = modelDataArr[11]; //合作节制闸
     //let modelParam = modelDataArr[12];//双阳泵站
-    let modelParam = modelDataArr[13];//乌龙河交叉节制闸
+    //let modelParam = modelDataArr[13];//乌龙河交叉节制闸
 
     
 

@@ -114,8 +114,8 @@ class FFCesium {
      */
     this.particleEffectClass = new ParticleEffectClass(this.viewer); //地图效果--粒子效果类
     this.weatherEffectClass = new WeatherEffectClass(this.viewer);//地图效果--天气效果类
-    this.polygonEffectClass=new PolygonEffectClass(this.viewer);//地图效果--面效果类
-    this.polylineEffectClass=new PolylineEffectClass(this.viewer);//地图效果--面效果类 
+    this.polygonEffectClass = new PolygonEffectClass(this.viewer);//地图效果--面效果类
+    this.polylineEffectClass = new PolylineEffectClass(this.viewer);//地图效果--面效果类 
 
   }
   defaultMap() {
