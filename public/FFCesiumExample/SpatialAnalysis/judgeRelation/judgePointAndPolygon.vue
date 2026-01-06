@@ -1,14 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="pointGatherFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="pointGatherFun">
       采集点
     </button>
 
-    <div
-      style="
+    <div style="
         position: absolute;
         left: 100px;
         top: 150px;
@@ -18,9 +14,7 @@
         width: 100px;
         height: 30px;
         padding: 10px;
-      "
-      id="infoDiv"
-    ></div>
+      " id="infoDiv"></div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -47,12 +41,12 @@ const addPolygonPrimitiveFun = () => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  polygonPrimitive = ffCesium.addPolygonPrimitive(polygonArr, option);
+  polygonPrimitive = ffCesium.primitiveClass.addPolygonPrimitive(polygonArr, option);
 };
 
 //采集点
 const pointGatherFun = () => {
-  ffCesium.pointGather(pointGatherFunCallback, {
+  ffCesium.elementGatherClass.pointGather(pointGatherFunCallback, {
     color: "#FBFF65",
     alpha: 1,
     pixelSize: 10,
@@ -64,7 +58,7 @@ const pointGatherFunCallback = (gatherPoint) => {
   console.log("采集成功,其坐标为：", gatherPoint.FFCoordinates);
   let pointArr = [gatherPoint.FFCoordinates[0], gatherPoint.FFCoordinates[1]];
   //注意polygonArr多了个[]
-  let flag = ffCesium.judgePointAndPolygon(pointArr, [polygonArr]);
+  let flag = ffCesium.spatialAnalysisClass.judgePointAndPolygon(pointArr, [polygonArr]);
   if (flag == true) {
     document.getElementById("infoDiv").innerHTML = "点在面里面";
   } else {

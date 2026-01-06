@@ -1,14 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="polygonGatherFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="polygonGatherFun">
       面采集
     </button>
 
-    <div
-      style="
+    <div style="
         position: absolute;
         left: 100px;
         top: 150px;
@@ -18,9 +14,7 @@
         width: 200px;
         height: 30px;
         padding: 10px;
-      "
-      id="infoDiv"
-    ></div>
+      " id="infoDiv"></div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -46,11 +40,11 @@ const addPolygonPrimitiveFun = () => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  polygonPrimitive = ffCesium.addPolygonPrimitive(polygonArr, option);
+  polygonPrimitive = ffCesium.primitiveClass.addPolygonPrimitive(polygonArr, option);
 };
 
 const polygonGatherFun = () => {
-  ffCesium.polygonGather(polygonGatherFunCallback, {
+  ffCesium.elementGatherClass.polygonGather(polygonGatherFunCallback, {
     color: "#FBFF65",
     alpha: 0.5,
   });
@@ -65,7 +59,7 @@ const polygonGatherFunCallback = (gatherPolygon) => {
     gatherPolygonArr.push([element[0], element[1]]);
   });
   //注意polygonArr多了个[]
-  let flag = ffCesium.judgePolygonAndPolygon([gatherPolygonArr], [polygonArr]);
+  let flag = ffCesium.spatialAnalysisClass.judgePolygonAndPolygon([gatherPolygonArr], [polygonArr]);
   if (flag == true) {
     document.getElementById("infoDiv").innerHTML = "采集面在面里面或者交叉";
   } else {

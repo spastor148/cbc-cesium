@@ -1,14 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="polylineGatherFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="polylineGatherFun">
       线采集
     </button>
 
-    <div
-      style="
+    <div style="
         position: absolute;
         left: 100px;
         top: 150px;
@@ -18,9 +14,7 @@
         width: 150px;
         height: 30px;
         padding: 10px;
-      "
-      id="infoDiv"
-    ></div>
+      " id="infoDiv"></div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -47,12 +41,12 @@ const addPolygonPrimitiveFun = () => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  polygonPrimitive = ffCesium.addPolygonPrimitive(polygonArr, option);
+  polygonPrimitive = ffCesium.primitiveClass.addPolygonPrimitive(polygonArr, option);
 };
 
 //采集线
 const polylineGatherFun = () => {
-  ffCesium.polylineGather(polylineGatherFunCallback, {
+  ffCesium.elementGatherClass.polylineGather(polylineGatherFunCallback, {
     color: "#FBFF65",
     alpha: 1,
     width: 5,
@@ -67,7 +61,7 @@ const polylineGatherFunCallback = (gatherPolyline) => {
     polylineArr.push([element[0], element[1]]);
   });
   //注意polygonArr多了个[]
-  let flag = ffCesium.judgePolylineAndPolygon(polylineArr, [polygonArr]);
+  let flag = ffCesium.spatialAnalysisClass.judgePolylineAndPolygon(polylineArr, [polygonArr]);
   if (flag == true) {
     document.getElementById("infoDiv").innerHTML = "线在面里面或者交叉";
   } else {

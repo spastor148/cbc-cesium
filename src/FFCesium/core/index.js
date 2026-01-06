@@ -25,7 +25,7 @@ import MilitaryPlottingEditClass from "./libs/MapGather/MilitaryPlottingEditClas
 
 
 //空间分析
-import { judgeRelation } from "./libs/SpatialAnalysis/judgeRelation.js";
+import SpatialAnalysisClass from "./libs/SpatialAnalysis/SpatialAnalysisClass.js";
 //高级示例
 import AddTypeClass from "./libs/AdvancedExamples/AddTypeClass.js";
 //地图通用工具包
@@ -57,6 +57,7 @@ class FFCesium {
   elementEditClass;
   militaryPlottingGatherClass;
   militaryPlottingEditClass;
+  spatialAnalysisClass;
   cesiumID;
   viewer;
   Cesium;
@@ -68,8 +69,6 @@ class FFCesium {
     //合并其他文件JS文件方法1231
     let time1 = new Date().getTime();
     Object.assign(FFCesium.prototype, {
-      //空间分析
-      ...judgeRelation,
       //地图通用工具包
       ...mapUtil,
       //其他
@@ -127,6 +126,8 @@ class FFCesium {
     this.elementEditClass = new ElementEditClass(this);
     this.militaryPlottingGatherClass = new MilitaryPlottingGatherClass(this);
     this.militaryPlottingEditClass = new MilitaryPlottingEditClass(this);
+    //空间分析类
+    this.spatialAnalysisClass = new SpatialAnalysisClass(this);
   }
   defaultMap() {
     let viewerOption = {

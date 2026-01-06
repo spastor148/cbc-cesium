@@ -1,6 +1,5 @@
 import * as Cesium from "cesium";
 import { getModelMatrix, getHeadingPitchRoll } from "../dependentLib/getHpr.js";
-//点线面采集方法
 export const pipe = {
   addCylinder(linePoints, option) {
     //圆柱的中心点
