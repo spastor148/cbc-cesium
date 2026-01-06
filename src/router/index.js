@@ -6,11 +6,7 @@ const routes = [
   },
   {
     path: "/test",
-    component: () => import("@/components/test/index.vue")
-  },
-  {
-    path: "/SituationPlotting",
-    component: () => import("@/components/test/SituationPlotting/index.vue")
+    component: () => import("@/components/useTest/index.vue")
   },
   {
     path: "/mapCode",

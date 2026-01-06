@@ -1,10 +1,10 @@
 import MapActionLogic from "./LogicClass/MapActionLogic.js";
-import { mapUtil } from "../mapUtil.js";
 import * as Cesium from "cesium";
 
 export default class MapActionClass {
-    constructor(viewer) {
-        this.viewer = viewer;
+    constructor(ffCesium) {
+        this.ffCesium = ffCesium;
+        this.viewer = ffCesium.viewer;
         this.mapActionLogic = new MapActionLogic();
     }
 
@@ -95,7 +95,7 @@ export default class MapActionClass {
     }
 
     flyToByBoundingSphere(lnglatArr, option) {
-        let boundingSphere = Cesium.BoundingSphere.fromPoints(mapUtil.lngLatHeightArrToCartesian3Arr(lnglatArr));
+        let boundingSphere = Cesium.BoundingSphere.fromPoints(this.ffCesium.mapUtilClass.lngLatHeightArrToCartesian3Arr(lnglatArr));
         this.viewer.camera.flyToBoundingSphere(boundingSphere, option);
     }
 

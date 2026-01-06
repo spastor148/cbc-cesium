@@ -1,7 +1,6 @@
 import * as Cesium from "cesium";
 import { createGatherPoint, createHalfGatherPoint } from "./LogicClass/common.js";
 import ElementGatherLogic from "./LogicClass/ElementGatherLogic.js";
-import { mapUtil } from "../mapUtil.js";
 
 /**
  * 元素采集类
@@ -135,7 +134,7 @@ class ElementGatherClass {
             //清除圆中心点和半径点
             viewer.entities.remove(centerPoint);
             centerPoint = null;
-            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherCircleEntity, option, "circle");
+            the.ffCesium.mapUtilClass.setAttributeForEntity(gatherCircleEntity, option, "circle");
             callback(gatherCircleEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     }
@@ -201,7 +200,7 @@ class ElementGatherClass {
             the.viewer.entities.remove(startPoint);
             //移除事件
             the.gatherHandlerDestroy();
-            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherRectangleEntity, option, "rectangle");
+            the.ffCesium.mapUtilClass.setAttributeForEntity(gatherRectangleEntity, option, "rectangle");
             callback(gatherRectangleEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
         //Cesium.ScreenSpaceEventType.LEFT_UP
@@ -268,7 +267,7 @@ class ElementGatherClass {
             //移除事件
             the.gatherHandlerDestroy();
             //设置属性
-            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherPointEntity, option, "point");
+            the.ffCesium.mapUtilClass.setAttributeForEntity(gatherPointEntity, option, "point");
             callback(gatherPointEntity);
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     }
@@ -326,7 +325,7 @@ class ElementGatherClass {
             //移除事件
             the.gatherHandlerDestroy();
             //设置属性
-            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherPolylineEntity, option, "polyline");
+            the.ffCesium.mapUtilClass.setAttributeForEntity(gatherPolylineEntity, option, "polyline");
 
             callback(gatherPolylineEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -391,7 +390,7 @@ class ElementGatherClass {
             document.getElementById(the.cesiumID).style.cursor = "default";
             //移除事件
             the.gatherHandlerDestroy();
-            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherPolygonEntity, option, "polygon");
+            the.ffCesium.mapUtilClass.setAttributeForEntity(gatherPolygonEntity, option, "polygon");
             callback(gatherPolygonEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     }

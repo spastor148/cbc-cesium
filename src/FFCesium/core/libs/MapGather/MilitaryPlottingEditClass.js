@@ -2,7 +2,6 @@ import * as Cesium from "cesium";
 import { createGatherPoint } from "./LogicClass/common.js";
 import { xp } from "../../dependentLib/plotHelper/algorithm.js";
 import MilitaryPlottingEditLogic from "./LogicClass/MilitaryPlottingEditLogic.js";
-import { mapUtil } from "../mapUtil.js";
 import { P } from "../../dependentLib/plotHelper/plotUtil.js";
 
 /**
@@ -36,7 +35,7 @@ class MilitaryPlottingEditClass {
 
     closeRendezvousEdit(entityObj) {
         entityObj.FFPosition = entityObj.polygon.hierarchy.getValue().positions;
-        let lngLatHeightArr = mapUtil.cartesian3ArrToLngLatHeightArr.call(this.ffCesium, entityObj.FFPosition);
+        let lngLatHeightArr = this.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(entityObj.FFPosition);
         entityObj.FFCoordinates = lngLatHeightArr;
         this.endMilitaryPlottingEditDeal();
         return entityObj;
@@ -48,7 +47,7 @@ class MilitaryPlottingEditClass {
         let the = this;
         let isMoving = false;
         let pickedAnchor = null;
-        let gatherPosition = mapUtil.lngLatHeightArrToCartesian3Arr.call(this.ffCesium, entityObj.FFPlotKeyPoints);
+        let gatherPosition = this.ffCesium.mapUtilClass.lngLatHeightArrToCartesian3Arr(entityObj.FFPlotKeyPoints);
         for (var i = 0; i < gatherPosition.length; i++) {
             let pointTemp = createGatherPoint(gatherPosition[i], this.viewer);
             pointTemp.oid = i;
@@ -120,7 +119,7 @@ class MilitaryPlottingEditClass {
             pickedAnchor.position.setValue(cartesian);
             var oid = pickedAnchor.oid;
             gatherPosition[oid] = cartesian;
-            entityObj.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, gatherPosition);
+            entityObj.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(gatherPosition);
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         this.militaryPlottingEditHandler.setInputAction(function (event) {
@@ -144,7 +143,7 @@ class MilitaryPlottingEditClass {
 
     addRendezvousEntity(lnglatArr, option) {
         let newOption = Object.assign({}, option);
-        var res = this.fineGatheringPlace(mapUtil.lngLatHeightArrToCartesian3Arr.call(this.ffCesium, lnglatArr));
+        var res = this.fineGatheringPlace(this.ffCesium.mapUtilClass.lngLatHeightArrToCartesian3Arr(lnglatArr));
         var pHierarchy = new Cesium.PolygonHierarchy(res);
         var bData = {
             polygon: new Cesium.PolygonGraphics({
@@ -158,14 +157,14 @@ class MilitaryPlottingEditClass {
             bData.id = newOption.id;
         }
         let rendezvousEntity = this.viewer.entities.add(bData);
-        mapUtil.setAttributeForEntity.call(this.ffCesium, rendezvousEntity, option, "FFRendezvousEntity");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(rendezvousEntity, option, "FFRendezvousEntity");
         rendezvousEntity.FFPlotKeyPoints = lnglatArr;
         return rendezvousEntity;
     }
 
     closeDoubleArrowEdit(entityObj) {
         entityObj.FFPosition = entityObj.polygon.hierarchy.getValue().positions;
-        let lngLatHeightArr = mapUtil.cartesian3ArrToLngLatHeightArr.call(this.ffCesium, entityObj.FFPosition);
+        let lngLatHeightArr = this.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(entityObj.FFPosition);
         entityObj.FFCoordinates = lngLatHeightArr;
         this.endMilitaryPlottingEditDeal();
         return entityObj;
@@ -177,7 +176,7 @@ class MilitaryPlottingEditClass {
         let the = this;
         let isMoving = false;
         let pickedAnchor = null;
-        let gatherPosition = mapUtil.lngLatHeightArrToCartesian3Arr.call(this.ffCesium, entityObj.FFPlotKeyPoints);
+        let gatherPosition = this.ffCesium.mapUtilClass.lngLatHeightArrToCartesian3Arr(entityObj.FFPlotKeyPoints);
         for (var i = 0; i < gatherPosition.length; i++) {
             let pointTemp = createGatherPoint(gatherPosition[i], this.viewer);
             pointTemp.oid = i;
@@ -246,7 +245,7 @@ class MilitaryPlottingEditClass {
             pickedAnchor.position.setValue(cartesian);
             var oid = pickedAnchor.oid;
             gatherPosition[oid] = cartesian;
-            entityObj.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, gatherPosition);
+            entityObj.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(gatherPosition);
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         this.militaryPlottingEditHandler.setInputAction(function (event) {
@@ -257,8 +256,8 @@ class MilitaryPlottingEditClass {
         entityObj.polygon.hierarchy = new Cesium.CallbackProperty(function () {
             if (gatherPosition.length > 2) {
                 try {
-                    var lonLats = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, gatherPosition);
-                    mapUtil.coordinateArrDeduplication(lonLats);
+                    var lonLats = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(gatherPosition);
+                    the.ffCesium.mapUtilClass.coordinateArrDeduplication(lonLats);
                     var doubleArrow = xp.algorithm.doubleArrow(lonLats);
                     var positions = doubleArrow.polygonalPoint;
                     if (!Cesium.defined(positions)) {
@@ -295,14 +294,14 @@ class MilitaryPlottingEditClass {
             bData.id = newOption.id;
         }
         let doubleArrowEntity = this.viewer.entities.add(bData);
-        mapUtil.setAttributeForEntity.call(this.ffCesium, doubleArrowEntity, option, "FFDoubleArrowEntity");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(doubleArrowEntity, option, "FFDoubleArrowEntity");
         doubleArrowEntity.FFPlotKeyPoints = lnglatArr;
         return doubleArrowEntity;
     }
 
     closeTailedAttackArrowEdit(entityObj) {
         entityObj.FFPosition = entityObj.polygon.hierarchy.getValue().positions;
-        let lngLatHeightArr = mapUtil.cartesian3ArrToLngLatHeightArr.call(this.ffCesium, entityObj.FFPosition);
+        let lngLatHeightArr = this.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(entityObj.FFPosition);
         entityObj.FFCoordinates = lngLatHeightArr;
         this.endMilitaryPlottingEditDeal();
         return entityObj;
@@ -314,7 +313,7 @@ class MilitaryPlottingEditClass {
         let the = this;
         let isMoving = false;
         let pickedAnchor = null;
-        let gatherPosition = mapUtil.lngLatHeightArrToCartesian3Arr.call(this.ffCesium, entityObj.FFPlotKeyPoints);
+        let gatherPosition = this.ffCesium.mapUtilClass.lngLatHeightArrToCartesian3Arr(entityObj.FFPlotKeyPoints);
         for (var i = 0; i < gatherPosition.length; i++) {
             let pointTemp = createGatherPoint(gatherPosition[i], this.viewer);
             pointTemp.oid = i;
@@ -383,7 +382,7 @@ class MilitaryPlottingEditClass {
             pickedAnchor.position.setValue(cartesian);
             var oid = pickedAnchor.oid;
             gatherPosition[oid] = cartesian;
-            entityObj.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, gatherPosition);
+            entityObj.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(gatherPosition);
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         this.militaryPlottingEditHandler.setInputAction(function (event) {
@@ -393,7 +392,7 @@ class MilitaryPlottingEditClass {
 
         entityObj.polygon.hierarchy = new Cesium.CallbackProperty(function () {
             if (gatherPosition.length > 1) {
-                var lonLats = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, gatherPosition);
+                var lonLats = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(gatherPosition);
                 var tailedAttackArrowTemp = xp.algorithm.tailedAttackArrow(lonLats);
                 var positions = tailedAttackArrowTemp.polygonalPoint;
                 if (positions == null || positions.length < 3) {
@@ -430,7 +429,7 @@ class MilitaryPlottingEditClass {
             keyPointArr.push(obj);
         }
         tailedAttackArrowEntity.keyPoints = keyPointArr;
-        mapUtil.setAttributeForEntity.call(this.ffCesium, tailedAttackArrowEntity, option, "FFTailedAttackArrowEntity");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(tailedAttackArrowEntity, option, "FFTailedAttackArrowEntity");
         tailedAttackArrowEntity.FFPlotKeyPoints = lnglatArr;
         return tailedAttackArrowEntity;
     }
@@ -450,14 +449,14 @@ class MilitaryPlottingEditClass {
             bData.id = newOption.id;
         }
         let straightArrowEntity = this.viewer.entities.add(bData);
-        mapUtil.setAttributeForEntity.call(this.ffCesium, straightArrowEntity, option, "FFStraightArrowEntity");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(straightArrowEntity, option, "FFStraightArrowEntity");
         straightArrowEntity.FFPlotKeyPoints = lnglatArr;
         return straightArrowEntity;
     }
 
     closeStraightArrowEdit(entityObj) {
         entityObj.FFPosition = entityObj.polygon.hierarchy.getValue().positions;
-        let lngLatHeightArr = mapUtil.cartesian3ArrToLngLatHeightArr.call(this.ffCesium, entityObj.FFPosition);
+        let lngLatHeightArr = this.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(entityObj.FFPosition);
         entityObj.FFCoordinates = lngLatHeightArr;
         this.endMilitaryPlottingEditDeal();
         return entityObj;
@@ -469,7 +468,7 @@ class MilitaryPlottingEditClass {
         let the = this;
         let isMoving = false;
         let pickedAnchor = null;
-        let gatherPosition = mapUtil.lngLatHeightArrToCartesian3Arr.call(this.ffCesium, entityObj.FFPlotKeyPoints);
+        let gatherPosition = this.ffCesium.mapUtilClass.lngLatHeightArrToCartesian3Arr(entityObj.FFPlotKeyPoints);
         for (var i = 0; i < gatherPosition.length; i++) {
             let pointTemp = createGatherPoint(gatherPosition[i], this.viewer);
             pointTemp.oid = i;
@@ -538,7 +537,7 @@ class MilitaryPlottingEditClass {
             pickedAnchor.position.setValue(cartesian);
             var oid = pickedAnchor.oid;
             gatherPosition[oid] = cartesian;
-            entityObj.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, gatherPosition);
+            entityObj.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(gatherPosition);
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
         this.militaryPlottingEditHandler.setInputAction(function (event) {
             the.closeStraightArrowEdit(entityObj);
@@ -549,11 +548,11 @@ class MilitaryPlottingEditClass {
             if (gatherPosition.length > 1) {
                 var p1 = gatherPosition[0];
                 var p2 = gatherPosition[1];
-                if (mapUtil.isSimpleXYZ(p1, p2)) {
+                if (the.ffCesium.mapUtilClass.isSimpleXYZ(p1, p2)) {
                     return null;
                 }
-                var firstPoint = mapUtil.positionToLngLatHeight.call(the.ffCesium, p1);
-                var endPoints = mapUtil.positionToLngLatHeight.call(the.ffCesium, p2);
+                var firstPoint = the.ffCesium.mapUtilClass.positionToLngLatHeight(p1);
+                var endPoints = the.ffCesium.mapUtilClass.positionToLngLatHeight(p2);
                 var arrow = xp.algorithm.fineArrow([firstPoint[0], firstPoint[1]], [endPoints[0], endPoints[1]]);
                 var pHierarchy = new Cesium.PolygonHierarchy(arrow);
                 pHierarchy.keyPoints = [firstPoint, endPoints];
@@ -572,7 +571,7 @@ class MilitaryPlottingEditClass {
         } else {
             let pnts = new Array();
             cartesianPoints.forEach(function (item) {
-                var posLonLat = mapUtil.positionToLngLatHeight.call(the.ffCesium, item);
+                var posLonLat = the.ffCesium.mapUtilClass.positionToLngLatHeight(item);
                 pnts.push([posLonLat[0], posLonLat[1]]);
             });
 

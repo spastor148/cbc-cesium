@@ -1,7 +1,6 @@
 import * as Cesium from "cesium";
 import { createGatherPoint, createHalfGatherPoint } from "./LogicClass/common.js";
 import ElementEditLogic from "./LogicClass/ElementEditLogic.js";
-import { mapUtil } from "../mapUtil.js";
 
 /**
  * 元素编辑类
@@ -320,7 +319,7 @@ class ElementEditClass {
         circle.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
         circle.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP);
 
-        mapUtil.setAttributeForEntity.call(this.ffCesium, circle, circle.FFOption, "circle");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(circle, circle.FFOption, "circle");
         this.ffCesium.entityClass.removeFFEntityIDArr(circle.pointsId);
         circle.pointsId = [];
         return circle;
@@ -478,7 +477,7 @@ class ElementEditClass {
         polygon.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
         polygon.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP);
 
-        mapUtil.setAttributeForEntity.call(this.ffCesium, polygon, polygon.FFOption, "polygon");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(polygon, polygon.FFOption, "polygon");
         this.ffCesium.entityClass.removeFFEntityIDArr(polygon.pointsId);
         polygon.pointsId = [];
         this.ffCesium.entityClass.removeFFEntityIDArr(polygon.halfPointsId);
@@ -611,7 +610,7 @@ class ElementEditClass {
         polyline.handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
         polyline.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
         polyline.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP);
-        mapUtil.setAttributeForEntity.call(this.ffCesium, polyline, polyline.FFOption, "polyline");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(polyline, polyline.FFOption, "polyline");
         this.ffCesium.entityClass.removeFFEntityIDArr(polyline.pointsId);
         polyline.pointsId = [];
         this.ffCesium.entityClass.removeFFEntityIDArr(polyline.halfPointsId);
@@ -673,7 +672,7 @@ class ElementEditClass {
         point.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP);
         point.isEditting = false;
         point.point.outlineWidth = 0;
-        mapUtil.setAttributeForEntity.call(this.ffCesium, point, point.FFOption, "point");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(point, point.FFOption, "point");
     }
 
     billboardEdit(billboard, callback) {
@@ -729,7 +728,7 @@ class ElementEditClass {
         billboard.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP);
         billboard.isEditting = false;
         billboard.billboard.color = new Cesium.Color.fromCssColorString("#FFFFFF").withAlpha(1);
-        mapUtil.setAttributeForEntity.call(this.ffCesium, billboard, billboard.FFOption, "billboard");
+        this.ffCesium.mapUtilClass.setAttributeForEntity(billboard, billboard.FFOption, "billboard");
     }
 }
 

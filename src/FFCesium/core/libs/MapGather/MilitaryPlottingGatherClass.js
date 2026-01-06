@@ -3,7 +3,6 @@ import { createGatherPoint } from "./LogicClass/common.js";
 import { xp } from "../../dependentLib/plotHelper/algorithm.js";
 import { P } from "../../dependentLib/plotHelper/plotUtil.js";
 import MilitaryPlottingGatherLogic from "./LogicClass/MilitaryPlottingGatherLogic.js";
-import { mapUtil } from "../mapUtil.js";
 
 /**
  * 军事标绘采集类
@@ -59,11 +58,11 @@ class MilitaryPlottingGatherClass {
                 if (cartesianPoints.length > 1) {
                     var p1 = cartesianPoints[0];
                     var p2 = cartesianPoints[1];
-                    if (mapUtil.isSimpleXYZ(p1, p2)) {
+                    if (the.ffCesium.mapUtilClass.isSimpleXYZ(p1, p2)) {
                         return null;
                     }
-                    let firstPoint = mapUtil.positionToLngLatHeight.call(the.ffCesium, p1);
-                    let endPoints = mapUtil.positionToLngLatHeight.call(the.ffCesium, p2);
+                    let firstPoint = the.ffCesium.mapUtilClass.positionToLngLatHeight(p1);
+                    let endPoints = the.ffCesium.mapUtilClass.positionToLngLatHeight(p2);
                     var arrow = xp.algorithm.fineArrow([firstPoint[0], firstPoint[1]], [endPoints[0], endPoints[1]]);
                     var pHierarchy = new Cesium.PolygonHierarchy(arrow);
                     pHierarchy.keyPoints = [firstPoint, endPoints];
@@ -75,7 +74,7 @@ class MilitaryPlottingGatherClass {
         } else if (type == "FFTailedAttackArrowEntity") {
             dynamicHierarchy = new Cesium.CallbackProperty(function () {
                 if (cartesianPoints.length > 1) {
-                    var lonLats = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, cartesianPoints);
+                    var lonLats = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(cartesianPoints);
                     var doubleArrow = xp.algorithm.tailedAttackArrow(lonLats);
                     var positions = doubleArrow.polygonalPoint;
                     if (positions == null || positions.length < 3) {
@@ -91,8 +90,8 @@ class MilitaryPlottingGatherClass {
         } else if (type == "FFDoubleArrowEntity") {
             dynamicHierarchy = new Cesium.CallbackProperty(function () {
                 if (cartesianPoints.length > 2) {
-                    var lonLats = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, cartesianPoints);
-                    mapUtil.coordinateArrDeduplication(lonLats);
+                    var lonLats = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(cartesianPoints);
+                    the.ffCesium.mapUtilClass.coordinateArrDeduplication(lonLats);
                     var doubleArrow = xp.algorithm.doubleArrow(lonLats);
                     var positions = doubleArrow.polygonalPoint;
                     if (!Cesium.defined(positions)) {
@@ -200,9 +199,9 @@ class MilitaryPlottingGatherClass {
         this.militaryPlottingGatherHandler.setInputAction(function (movement) {
             var num = cartesianPoints.length;
             if (num > 2) {
-                gatherEntity.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, cartesianPoints);
+                gatherEntity.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(cartesianPoints);
                 the.endMilitaryPlottingGatherDeal();
-                mapUtil.setAttributeForEntity.call(the.ffCesium, gatherEntity, option, "FFRendezvousEntity");
+                the.ffCesium.mapUtilClass.setAttributeForEntity(gatherEntity, option, "FFRendezvousEntity");
                 callback(gatherEntity);
             }
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -249,9 +248,9 @@ class MilitaryPlottingGatherClass {
             if (cartesianPoints.length > 5) {
                 cartesianPoints.pop();
                 the.viewer.entities.remove(floatingPoint);
-                gatherEntity.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, cartesianPoints);
+                gatherEntity.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(cartesianPoints);
                 the.endMilitaryPlottingGatherDeal();
-                mapUtil.setAttributeForEntity.call(the.ffCesium, gatherEntity, option, "FFDoubleArrowEntity");
+                the.ffCesium.mapUtilClass.setAttributeForEntity(gatherEntity, option, "FFDoubleArrowEntity");
                 callback(gatherEntity);
             }
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -321,9 +320,9 @@ class MilitaryPlottingGatherClass {
             if (cartesianPoints.length < 2) {
                 return;
             }
-            gatherEntity.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, cartesianPoints);
+            gatherEntity.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(cartesianPoints);
             the.endMilitaryPlottingGatherDeal();
-            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherEntity, option, "FFTailedAttackArrowEntity");
+            the.ffCesium.mapUtilClass.setAttributeForEntity(gatherEntity, option, "FFTailedAttackArrowEntity");
             callback(gatherEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
@@ -398,9 +397,9 @@ class MilitaryPlottingGatherClass {
             var num = cartesianPoints.length;
             if (num > 1) {
                 cartesianPoints.pop();
-                gatherEntity.FFPlotKeyPoints = mapUtil.cartesian3ArrToLngLatHeightArr.call(the.ffCesium, cartesianPoints);
+                gatherEntity.FFPlotKeyPoints = the.ffCesium.mapUtilClass.cartesian3ArrToLngLatHeightArr(cartesianPoints);
                 the.endMilitaryPlottingGatherDeal();
-                mapUtil.setAttributeForEntity.call(the.ffCesium, gatherEntity, option, "FFStraightArrowEntity");
+                the.ffCesium.mapUtilClass.setAttributeForEntity(gatherEntity, option, "FFStraightArrowEntity");
                 callback(gatherEntity);
             }
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -435,7 +434,7 @@ class MilitaryPlottingGatherClass {
         } else {
             let pnts = new Array();
             cartesianPoints.forEach(function (item) {
-                var posLonLat = mapUtil.positionToLngLatHeight.call(the.ffCesium, item);
+                var posLonLat = the.ffCesium.mapUtilClass.positionToLngLatHeight(item);
                 pnts.push([posLonLat[0], posLonLat[1]]);
             });
 

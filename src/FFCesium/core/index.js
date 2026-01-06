@@ -29,9 +29,8 @@ import SpatialAnalysisClass from "./libs/SpatialAnalysis/SpatialAnalysisClass.js
 //高级示例
 import AddTypeClass from "./libs/AdvancedExamples/AddTypeClass.js";
 //地图通用工具包
-import { mapUtil } from "./libs/mapUtil.js";
+import MapUtilClass from "./libs/MapUtil/MapUtilClass.js";
 //其他
-import { pipe } from "./libs/pipe.js";
 
 //高级示例
 import RotateTool from "../senior/libs/rotateTool/index.js";
@@ -58,6 +57,7 @@ class FFCesium {
   militaryPlottingGatherClass;
   militaryPlottingEditClass;
   spatialAnalysisClass;
+  mapUtilClass;
   cesiumID;
   viewer;
   Cesium;
@@ -68,12 +68,7 @@ class FFCesium {
     this.Cesium = Cesium;
     //合并其他文件JS文件方法1231
     let time1 = new Date().getTime();
-    Object.assign(FFCesium.prototype, {
-      //地图通用工具包
-      ...mapUtil,
-      //其他
-      ...pipe
-    });
+    //Object.assign(FFCesium.prototype, {});
 
     let time2 = new Date().getTime();
     console.log("FFCesium所使用Cesium版本", Cesium.VERSION);
@@ -117,8 +112,8 @@ class FFCesium {
     // 初始化地图操作类
     this.mapToolClass = new MapToolClass(this.viewer, this.cesiumID);
     this.primitiveClass = new PrimitiveClass(this.viewer);
-    this.entityClass = new EntityClass(this.viewer);
-    this.mapActionClass = new MapActionClass(this.viewer);
+    this.entityClass = new EntityClass(this);
+    this.mapActionClass = new MapActionClass(this);
     this.elementClass = new ElementClass(this.viewer, this.cesiumID);
 
     // 初始化地图采集类
@@ -128,6 +123,8 @@ class FFCesium {
     this.militaryPlottingEditClass = new MilitaryPlottingEditClass(this);
     //空间分析类
     this.spatialAnalysisClass = new SpatialAnalysisClass(this);
+    //地图工具类
+    this.mapUtilClass = new MapUtilClass(this);
   }
   defaultMap() {
     let viewerOption = {

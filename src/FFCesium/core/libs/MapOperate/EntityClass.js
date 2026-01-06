@@ -1,9 +1,9 @@
 import EntityLogic from "./LogicClass/EntityLogic.js";
-import { mapUtil } from "../mapUtil.js";
 
 export default class EntityClass {
-    constructor(viewer) {
-        this.viewer = viewer;
+    constructor(ffCesium) {
+        this.ffCesium = ffCesium;
+        this.viewer = ffCesium.viewer;
         this.entityLogic = new EntityLogic();
     }
 
@@ -69,7 +69,7 @@ export default class EntityClass {
     }
 
     addPolygonEntity(lnglatArr, option) {
-        const { polygonConfig, positionTemp, lnglatArr: processedLngLatArr } = this.entityLogic.getPolygonConfig(lnglatArr, option, mapUtil);
+        const { polygonConfig, positionTemp, lnglatArr: processedLngLatArr } = this.entityLogic.getPolygonConfig(lnglatArr, option, this.ffCesium.mapUtilClass);
         let polygonEntity = this.viewer.entities.add(polygonConfig);
         polygonEntity.FFOption = option;
         polygonEntity.FFType = "FFPolygonEntity";

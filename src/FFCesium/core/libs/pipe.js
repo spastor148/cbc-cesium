@@ -1,6 +1,7 @@
 import * as Cesium from "cesium";
 import { getModelMatrix, getHeadingPitchRoll } from "../dependentLib/getHpr.js";
 export const pipe = {
+  //叠加圆柱
   addCylinder(linePoints, option) {
     //圆柱的中心点
     let centerPointX = (linePoints[0] + linePoints[3]) / 2;

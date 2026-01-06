@@ -60,6 +60,18 @@ export default class ElementClass {
         return htmlOverlay;
     }
 
+    /**
+     * 添加圆柱体
+     * @param {*} linePoints 
+     * @param {*} option 
+     * @returns 
+     */
+    addCylinder(linePoints, option) {
+        let primitive = this.elementLogic.addCylinder(linePoints, option);
+        this.viewer.scene.primitives.add(primitive);
+        return primitive;
+    }
+
     removeHtml(htmlOverlay) {
         try {
             document.getElementById(this.cesiumID).removeChild(htmlOverlay);
