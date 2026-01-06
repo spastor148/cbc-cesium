@@ -14,7 +14,7 @@ class FlyRoamNew {
   option;
   FlyRoamPoint = null;
   pauseFlag = false;
-  intervalTime=null;
+  intervalTime = null;
 
   constructor(ffCesium) {
     this.ffCesium = ffCesium;
@@ -48,7 +48,7 @@ class FlyRoamNew {
     let the = this;
     let viewer = this.ffCesium.viewer;
     //console.log("开始飞行", lngLatHeightArr);
-    let movePointArr = this.ffCesium.getLngLatArrFromLngLatHeightArr(lngLatHeightArr);
+    let movePointArr = this.ffCesium.mapUtilClass.getLngLatArrFromLngLatHeightArr(lngLatHeightArr);
     //console.log("movePointArr", movePointArr);
     let indexFlag = 0;
     var line = turf.lineString(movePointArr);

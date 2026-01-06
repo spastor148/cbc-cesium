@@ -89,9 +89,7 @@ class FFCesium {
     let time3 = new Date().getTime();
 
 
-    this.rotateTool = new RotateTool(this);
-    this.flyRoam = new FlyRoam(this);
-    this.flyRoamNew = new FlyRoamNew(this);
+
 
     // this.addPrimitiveInit();
     console.log("FFCesium构建总耗时（ms）", time3 - time1);
@@ -125,6 +123,11 @@ class FFCesium {
     this.spatialAnalysisClass = new SpatialAnalysisClass(this);
     //地图工具类
     this.mapUtilClass = new MapUtilClass(this);
+
+    //高级示例
+    this.rotateTool = new RotateTool(this);
+    this.flyRoam = new FlyRoam(this);
+    this.flyRoamNew = new FlyRoamNew(this);
   }
   defaultMap() {
     let viewerOption = {

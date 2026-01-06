@@ -17,7 +17,7 @@ class MapUtilLogic {
             let curPosition = Cesium.Ellipsoid.WGS84.cartesianToCartographic(centerResult);
             let curLongitude = (curPosition.longitude * 180) / Math.PI;
             let curLatitude = (curPosition.latitude * 180) / Math.PI;
-            return [curLongitude, curLatitude];
+            return { lon: curLongitude, lat: curLatitude };
         } else {
             return null;
         }

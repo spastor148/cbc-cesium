@@ -34,7 +34,7 @@ class RotateTool {
           if (this.rotateFlag == false) {
             this.currentEntity = pickedObject.id;
             //先判断距离
-            let centerPosition = this.ffCesium.getCenterPosition(this.ffCesium);
+            let centerPosition = this.ffCesium.mapUtilClass.getCenterPosition();
             console.log("centerPosition555", centerPosition);
             let distancetemp;
             if (centerPosition) {
@@ -54,7 +54,7 @@ class RotateTool {
               flyToCallback();
             } else {
               //开始旋转（飞行定位）
-              this.ffCesium.flyTo(
+              this.ffCesium.mapActionClass.flyTo(
                 {
                   lng: this.currentEntity.lngLatHeight[0],
                   lat: this.currentEntity.lngLatHeight[1],
@@ -74,7 +74,7 @@ class RotateTool {
         } else if (pickedObject.id.openRotateToolType == "return") {
           this.stopRotate();
           //重置相机
-          this.ffCesium.resetView(pickedObject.id.lngLatHeight, { time: 2 });
+          this.ffCesium.mapActionClass.resetView(pickedObject.id.lngLatHeight, { time: 2 });
         }
       }
     };
@@ -209,7 +209,7 @@ class RotateTool {
   addButton(lngLatHeightArr, option) {
     lngLatHeightArr.forEach((item) => {
       //测试点
-      let pointPrimitive = this.ffCesium.addPointPrimitive(item, {
+      let pointPrimitive = this.ffCesium.primitiveClass.addPointPrimitive(item, {
         pixelSize: 10,
         color: "#FFFF00",
         alpha: 1,
