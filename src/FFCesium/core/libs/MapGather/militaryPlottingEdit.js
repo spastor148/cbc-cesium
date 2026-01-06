@@ -1,8 +1,6 @@
 import * as Cesium from "cesium";
 import { createGatherPoint } from "./common.js";
 import { xp } from "../../dependentLib/plotHelper/algorithm.js";
-import { P } from "../../dependentLib/plotHelper/plotUtil.js";
-import { fa } from "element-plus/es/locales.mjs";
 export const militaryPlottingEdit = {
   //一次只能有一个修改事件
   militaryPlottingEditHandler: null,
