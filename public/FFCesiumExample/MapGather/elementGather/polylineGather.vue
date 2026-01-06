@@ -6,37 +6,37 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { onMounted } from "vue";
-  import FFCesium from "FFCesium";
+import { onMounted } from "vue";
+import FFCesium from "FFCesium";
 
-  let ffCesium = null;
-  onMounted(() => {
-    ffCesium = new FFCesium("cesiumContainer");
+let ffCesium = null;
+onMounted(() => {
+  ffCesium = new FFCesium("cesiumContainer");
+});
+
+const polylineGatherFun = () => {
+  ffCesium.elementGatherClass.polylineGather(polylineGatherFunCallback, {
+    color: "#FBFF65",
+    alpha: 1,
+    width: 5,
+    clampToGround: true
   });
+};
 
-  const polylineGatherFun = () => {
-    ffCesium.polylineGather(polylineGatherFunCallback, {
-      color: "#FBFF65",
-      alpha: 1,
-      width: 5,
-      clampToGround: true
-    });
-  };
+const polylineGatherFunCallback = (gatherPolyline) => {
+  console.log("坐标采集成功,其对象为：", gatherPolyline);
+  console.log("坐标采集成功,其坐标为：", gatherPolyline.FFCoordinates);
+};
 
-  const polylineGatherFunCallback = (gatherPolyline) => {
-    console.log("坐标采集成功,其对象为：", gatherPolyline);
-    console.log("坐标采集成功,其坐标为：", gatherPolyline.FFCoordinates);
-  };
-
-  const endGatherFun = () => {
-    ffCesium.forceGatherEnd();
-    //ffCesium.gatherHandlerDestroy();
-  };
+const endGatherFun = () => {
+  ffCesium.elementGatherClass.forceGatherEnd();
+  //ffCesium.gatherHandlerDestroy();
+};
 </script>
 <style scoped>
-  #cesiumContainer {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
+#cesiumContainer {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 </style>

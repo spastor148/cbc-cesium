@@ -6,35 +6,35 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { onMounted } from "vue";
-  import FFCesium from "FFCesium";
+import { onMounted } from "vue";
+import FFCesium from "FFCesium";
 
-  let ffCesium = null;
-  onMounted(() => {
-    ffCesium = new FFCesium("cesiumContainer");
+let ffCesium = null;
+onMounted(() => {
+  ffCesium = new FFCesium("cesiumContainer");
+});
+
+const polygonGatherFun = () => {
+  ffCesium.elementGatherClass.polygonGather(polygonGatherFunCallback, {
+    color: "#FBFF65",
+    alpha: 0.5
   });
+};
 
-  const polygonGatherFun = () => {
-    ffCesium.polygonGather(polygonGatherFunCallback, {
-      color: "#FBFF65",
-      alpha: 0.5
-    });
-  };
+const polygonGatherFunCallback = (gatherPolygon) => {
+  console.log("坐标采集成功,其对象为：", gatherPolygon);
+  console.log("坐标采集成功,其坐标为：", gatherPolygon.FFCoordinates);
+};
 
-  const polygonGatherFunCallback = (gatherPolygon) => {
-    console.log("坐标采集成功,其对象为：", gatherPolygon);
-    console.log("坐标采集成功,其坐标为：", gatherPolygon.FFCoordinates);
-  };
-
-  const endGatherFun = () => {
-    ffCesium.forceGatherEnd();
-    //ffCesium.gatherHandlerDestroy();
-  };
+const endGatherFun = () => {
+  ffCesium.elementGatherClass.forceGatherEnd();
+  //ffCesium.gatherHandlerDestroy();
+};
 </script>
 <style scoped>
-  #cesiumContainer {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
+#cesiumContainer {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 </style>

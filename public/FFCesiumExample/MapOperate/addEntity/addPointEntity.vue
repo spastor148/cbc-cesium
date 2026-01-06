@@ -19,7 +19,7 @@ onMounted(() => {
 });
 let pointEntity = null;
 const addPointEntityFun = () => {
-  let lnglat = [118.1022, 24.4959, 100];
+  let lngLatHeight = [118.1022, 24.4959, 100];
   let option = {
     pixelSize: 10,
     color: "#FFFF00",

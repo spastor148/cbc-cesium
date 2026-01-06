@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="rectangleEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="rectangleEditFun">
       矩形进入修改
     </button>
   </div>
@@ -25,12 +22,12 @@ onMounted(() => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  rectangleObj = ffCesium.addRectangleEntity(coordinates, option);
+  rectangleObj = ffCesium.entityClass.addRectangleEntity(coordinates, option);
   console.log("rectangleObj", rectangleObj);
 });
 
 const rectangleEditFun = () => {
-  ffCesium.rectangleEdit(rectangleObj, rectangleEditFunCallback);
+  ffCesium.elementEditClass.rectangleEdit(rectangleObj, rectangleEditFunCallback);
 };
 
 const rectangleEditFunCallback = (rectangle) => {

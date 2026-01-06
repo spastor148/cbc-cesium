@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="rendezvousEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="rendezvousEditFun">
       集结地进入修改
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="closeRendezvousEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="closeRendezvousEditFun">
       集结地结束修改
     </button>
   </div>
@@ -32,12 +26,12 @@ onMounted(() => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  entityObj = ffCesium.addRendezvousEntity(lnglatArr, option);
+  entityObj = ffCesium.militaryPlottingEditClass.addRendezvousEntity(lnglatArr, option);
   console.log("entityObj", entityObj);
 });
 
 const rendezvousEditFun = () => {
-  ffCesium.rendezvousEdit(entityObj, rendezvousEditFunCallback);
+  ffCesium.militaryPlottingEditClass.rendezvousEdit(entityObj, rendezvousEditFunCallback);
 };
 
 const rendezvousEditFunCallback = (entity) => {
@@ -47,7 +41,7 @@ const rendezvousEditFunCallback = (entity) => {
 };
 
 const closeRendezvousEditFun = () => {
-  ffCesium.closeRendezvousEdit(entityObj);
+  ffCesium.militaryPlottingEditClass.closeRendezvousEdit(entityObj);
   console.log("修改成功,其关键坐标为：", entityObj.FFPlotKeyPoints);
 };
 </script>

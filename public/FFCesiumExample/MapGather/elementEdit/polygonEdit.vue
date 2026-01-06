@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="polygonEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="polygonEditFun">
       面进入修改
     </button>
   </div>
@@ -26,12 +23,12 @@ onMounted(() => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  polygonObj = ffCesium.addPolygonEntity(lnglatArr, option);
+  polygonObj = ffCesium.entityClass.addPolygonEntity(lnglatArr, option);
   console.log("polygonObj", polygonObj);
 });
 
 const polygonEditFun = () => {
-  ffCesium.polygonEdit(polygonObj, polygonEditFunCallback);
+  ffCesium.elementEditClass.polygonEdit(polygonObj, polygonEditFunCallback);
 };
 
 const polygonEditFunCallback = (polygon) => {

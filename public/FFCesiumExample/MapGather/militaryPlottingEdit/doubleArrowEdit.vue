@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="doubleArrowEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="doubleArrowEditFun">
       钳击箭头进入修改
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="closeDoubleArrowEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="closeDoubleArrowEditFun">
       钳击箭头结束修改
     </button>
   </div>
@@ -34,12 +28,12 @@ onMounted(() => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  entityObj = ffCesium.addDoubleArrowEntity(lnglatArr, option);
+  entityObj = ffCesium.militaryPlottingEditClass.addDoubleArrowEntity(lnglatArr, option);
   console.log("entityObj", entityObj);
 });
 
 const doubleArrowEditFun = () => {
-  ffCesium.doubleArrowEdit(entityObj, doubleArrowEditFunCallback);
+  ffCesium.militaryPlottingEditClass.doubleArrowEdit(entityObj, doubleArrowEditFunCallback);
 };
 
 const doubleArrowEditFunCallback = (entity) => {
@@ -49,7 +43,7 @@ const doubleArrowEditFunCallback = (entity) => {
 };
 
 const closeDoubleArrowEditFun = () => {
-  ffCesium.closeDoubleArrowEdit(entityObj);
+  ffCesium.militaryPlottingEditClass.closeDoubleArrowEdit(entityObj);
   console.log("修改成功,其关键坐标为：", entityObj.FFPlotKeyPoints);
 };
 </script>

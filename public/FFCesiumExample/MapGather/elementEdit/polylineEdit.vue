@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="polylineEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="polylineEditFun">
       线进入修改
     </button>
   </div>
@@ -27,12 +24,12 @@ onMounted(() => {
     alpha: 1,
     clampToGround: true,
   };
-  polylineObj = ffCesium.addPolylineEntity(lnglatArr, option);
+  polylineObj = ffCesium.entityClass.addPolylineEntity(lnglatArr, option);
   console.log("polylineObj", polylineObj);
 });
 
 const polylineEditFun = () => {
-  ffCesium.polylineEdit(polylineObj, polylineEditFunCallback);
+  ffCesium.elementEditClass.polylineEdit(polylineObj, polylineEditFunCallback);
 };
 
 const polylineEditFunCallback = (polyline) => {

@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="pointEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="pointEditFun">
       点进入修改
     </button>
   </div>
@@ -24,12 +21,12 @@ onMounted(() => {
     outlineWidth: 2,
     outlineColor: "#0000FF",
   };
-  pointObj = ffCesium.addPointEntity(lnglat, option);
+  pointObj = ffCesium.entityClass.addPointEntity(lnglat, option);
   console.log("pointObj", pointObj);
 });
 
 const pointEditFun = () => {
-  ffCesium.pointEdit(pointObj, pointEditFunCallback);
+  ffCesium.elementEditClass.pointEdit(pointObj, pointEditFunCallback);
 };
 
 const pointEditFunCallback = (point) => {

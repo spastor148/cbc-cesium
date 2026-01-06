@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="tailedAttackArrowEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="tailedAttackArrowEditFun">
       攻击箭头进入修改
     </button>
   </div>
@@ -26,12 +23,12 @@ onMounted(() => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  entityObj = ffCesium.addTailedAttackArrow(lnglatArr, option);
+  entityObj = ffCesium.militaryPlottingEditClass.addTailedAttackArrow(lnglatArr, option);
   console.log("entityObj", entityObj);
 });
 
 const tailedAttackArrowEditFun = () => {
-  ffCesium.tailedAttackArrowEdit(entityObj, tailedAttackArrowEditFunCallback);
+  ffCesium.militaryPlottingEditClass.tailedAttackArrowEdit(entityObj, tailedAttackArrowEditFunCallback);
 };
 
 const tailedAttackArrowEditFunCallback = (entity) => {

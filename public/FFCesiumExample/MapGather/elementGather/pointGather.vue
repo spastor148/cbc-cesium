@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="pointGatherFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="pointGatherFun">
       点采集
     </button>
   </div>
@@ -18,10 +15,8 @@ onMounted(() => {
 });
 
 const pointGatherFun = () => {
-  ffCesium.pointGather(pointGatherFunCallback, {
+  ffCesium.elementGatherClass.pointGather(pointGatherFunCallback, {
     color: "#FBFF65",
-    alpha: 1,
-    pixelSize: 10,
   });
 };
 

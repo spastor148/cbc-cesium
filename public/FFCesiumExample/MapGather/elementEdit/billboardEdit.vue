@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="billboardEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="billboardEditFun">
       图标点进入修改
     </button>
   </div>
@@ -21,12 +18,12 @@ onMounted(() => {
     image: "./images/FFCesium/MapOperate/addOtherElement/favicon.ico",
     pixelOffset: [0, -16], //数组第一个元素是左右方向，负值向左，第二个元素是上下方向，负值向上，
   };
-  billboardObj = ffCesium.addBillboardEntity(lngLatHeight, option);
+  billboardObj = ffCesium.entityClass.addBillboardEntity(lngLatHeight, option);
   console.log("billboardObj", billboardObj);
 });
 
 const billboardEditFun = () => {
-  ffCesium.billboardEdit(billboardObj, billboardEditFunCallback);
+  ffCesium.elementEditClass.billboardEdit(billboardObj, billboardEditFunCallback);
 };
 
 const billboardEditFunCallback = (billboard) => {

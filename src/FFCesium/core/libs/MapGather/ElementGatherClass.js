@@ -120,7 +120,7 @@ class ElementGatherClass {
         // 对鼠标抬起事件的监听(结束点采集)
         this.gatherHandler.setInputAction((event) => {
             //鼠标变成默认
-            document.getElementById(this.cesiumID).style.cursor = "default";
+            document.getElementById(the.cesiumID).style.cursor = "default";
             //开始鼠标操作地图
             viewer.scene.screenSpaceCameraController.enableRotate = true;
             viewer.scene.screenSpaceCameraController.enableZoom = true;
@@ -135,7 +135,7 @@ class ElementGatherClass {
             //清除圆中心点和半径点
             viewer.entities.remove(centerPoint);
             centerPoint = null;
-            mapUtil.setAttributeForEntity.call(this.ffCesium, gatherCircleEntity, option, "circle");
+            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherCircleEntity, option, "circle");
             callback(gatherCircleEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     }
@@ -195,13 +195,13 @@ class ElementGatherClass {
         // 对鼠标抬起事件的监听(结束点采集)
         this.gatherHandler.setInputAction((event) => {
             //鼠标变成默认
-            document.getElementById(this.cesiumID).style.cursor = "default";
+            document.getElementById(the.ffCesium.cesiumID).style.cursor = "default";
             the.viewer.scene.screenSpaceCameraController.enableRotate = true;
             the.viewer.scene.screenSpaceCameraController.enableZoom = true;
             the.viewer.entities.remove(startPoint);
             //移除事件
             the.gatherHandlerDestroy();
-            mapUtil.setAttributeForEntity.call(this.ffCesium, gatherRectangleEntity, option, "rectangle");
+            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherRectangleEntity, option, "rectangle");
             callback(gatherRectangleEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
         //Cesium.ScreenSpaceEventType.LEFT_UP
@@ -251,14 +251,24 @@ class ElementGatherClass {
             if (!Cesium.defined(cartesian)) {
                 return;
             }
+            console.log("pointGather--cartesian", cartesian);
             let lngLatHeightTemp = the.ffCesium.mapToolClass.cartesian3ToLngLat(cartesian);
+            console.log("pointGather--lngLatHeightTemp", lngLatHeightTemp);
+
+            let option = {
+                pixelSize: 10,
+                color: "#FFFF00",
+                alpha: 1,
+                outlineWidth: 0,
+                outlineColor: "#0000FF",
+            };
             gatherPointEntity = the.ffCesium.entityClass.addPointEntity([lngLatHeightTemp.lng, lngLatHeightTemp.lat, lngLatHeightTemp.height], option);
             //鼠标变成默认
             document.getElementById(the.cesiumID).style.cursor = "default";
             //移除事件
             the.gatherHandlerDestroy();
             //设置属性
-            mapUtil.setAttributeForEntity.call(this.ffCesium, gatherPointEntity, option, "point");
+            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherPointEntity, option, "point");
             callback(gatherPointEntity);
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     }
@@ -316,7 +326,7 @@ class ElementGatherClass {
             //移除事件
             the.gatherHandlerDestroy();
             //设置属性
-            mapUtil.setAttributeForEntity.call(this.ffCesium, gatherPolylineEntity, option, "polyline");
+            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherPolylineEntity, option, "polyline");
 
             callback(gatherPolylineEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -381,7 +391,7 @@ class ElementGatherClass {
             document.getElementById(the.cesiumID).style.cursor = "default";
             //移除事件
             the.gatherHandlerDestroy();
-            mapUtil.setAttributeForEntity.call(this.ffCesium, gatherPolygonEntity, option, "polygon");
+            mapUtil.setAttributeForEntity.call(the.ffCesium, gatherPolygonEntity, option, "polygon");
             callback(gatherPolygonEntity);
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     }

@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="billboardGatherFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="billboardGatherFun">
       图标点采集
     </button>
   </div>
@@ -18,7 +15,7 @@ onMounted(() => {
 });
 
 const billboardGatherFun = () => {
-  ffCesium.billboardGather(billboardGatherFunCallback, {
+  ffCesium.elementGatherClass.billboardGather(billboardGatherFunCallback, {
     image: "./images/FFCesium/MapOperate/addOtherElement/favicon.ico",
     pixelOffset: [0, -16], //数组第一个元素是左右方向，负值向左，第二个元素是上下方向，负值向上，
   });

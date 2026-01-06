@@ -1,9 +1,6 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="circleEditFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="circleEditFun">
       圆进入修改
     </button>
   </div>
@@ -22,12 +19,12 @@ onMounted(() => {
     color: "#FFFF00",
     alpha: 0.5,
   };
-  CircleEntity = ffCesium.addCircleEntity(centerPoint, radius, option);
+  CircleEntity = ffCesium.entityClass.addCircleEntity(centerPoint, radius, option);
   console.log("CircleEntity", CircleEntity);
 });
 
 const circleEditFun = () => {
-  ffCesium.circleEdit(CircleEntity, circleEditFunCallback);
+  ffCesium.elementEditClass.circleEdit(CircleEntity, circleEditFunCallback);
 };
 
 const circleEditFunCallback = (circle) => {
