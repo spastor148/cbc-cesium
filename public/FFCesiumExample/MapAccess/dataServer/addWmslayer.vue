@@ -37,7 +37,7 @@ onMounted(() => {
     baseLayer: false,
   }; //初始化
   ffCesium = new FFCesium("cesiumContainer", viewerOption);
-  let mapLayer = ffCesium.addTdtImgLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtImgLayer();
   ffCesium.setView({
     lng: 118.135,
     lat: 24.339,
@@ -49,11 +49,11 @@ let wmslayer;
 const addWmslayerFun = () => {
   let url = "http://192.168.15.228:8078/geoserver/cbc/wms";
   let layerName = "cbc:ground";
-  wmslayer = ffCesium.addWmslayer(url, layerName);
+  wmslayer = ffCesium.dataServerClass.addWmslayer(url, layerName);
   console.log("wmslayer", wmslayer);
 };
 const removeWmslayerFun = () => {
-  ffCesium.removeMapLayer(wmslayer);
+  ffCesium.mapServerClass.removeMapLayer(wmslayer);
 };
 </script>
 <style scoped>

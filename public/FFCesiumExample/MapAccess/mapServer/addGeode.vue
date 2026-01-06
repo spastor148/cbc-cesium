@@ -23,7 +23,7 @@ onMounted(() => {
   }; //初始化
   const ffCesium = new FFCesium("cesiumContainer", viewerOption);
   console.log("ffCesium", ffCesium); //支持原生Cesium开发，其viewer获取方式：ffCesium.viewer //得加高德标准地图
-  let mapLayer = ffCesium.addGaodeLayer(
+  let mapLayer = ffCesium.mapServerClass.addGaodeLayer(
     "https://webst04.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
   ); //定位
   console.log("mapLayer", mapLayer);

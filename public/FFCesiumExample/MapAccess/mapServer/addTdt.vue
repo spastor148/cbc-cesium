@@ -76,39 +76,39 @@ onMounted(() => {
 let mapLayerArr = [];
 const clearAllLayerFun = () => {
   mapLayerArr.forEach((layer, index) => {
-    ffCesium.removeMapLayer(layer);
+    ffCesium.mapServerClass.removeMapLayer(layer);
   });
 };
 
 const addTdtVecLayerFun = () => {
-  let mapLayer = ffCesium.addTdtVecLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtVecLayer();
   mapLayerArr.push(mapLayer);
 };
 
 const addTdtCvaLayerFun = () => {
-  let mapLayer = ffCesium.addTdtCvaLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtCvaLayer();
   mapLayerArr.push(mapLayer);
 };
 
 const addTdtImgLayerFun = () => {
-  let mapLayer = ffCesium.addTdtImgLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtImgLayer();
   mapLayerArr.push(mapLayer);
 };
 
 const addTdtCiaLayerFun = () => {
-  let mapLayer = ffCesium.addTdtCiaLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtCiaLayer();
   mapLayerArr.push(mapLayer);
 };
 
 const addTdtCtaLayerFun = () => {
-  let mapLayer = ffCesium.addTdtCtaLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtCtaLayer();
   mapLayerArr.push(mapLayer);
 };
 
 const addTdtLayerFun = () => {
   let url =
     "https://t4.tianditu.gov.cn/ter_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ter&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=2cf56b2e77c1be9a456ef411d808daad";
-  let mapLayer = ffCesium.addTdtLayer(url);
+  let mapLayer = ffCesium.mapServerClass.addTdtLayer(url);
   mapLayerArr.push(mapLayer);
 };
 </script>

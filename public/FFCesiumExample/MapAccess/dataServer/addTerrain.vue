@@ -37,15 +37,15 @@ onMounted(() => {
     shouldAnimate: true,
   }; //初始化
   ffCesium = new FFCesium("cesiumContainer", viewerOption);
-  let mapLayer = ffCesium.addTdtImgLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtImgLayer();
   ffCesium.setView({ lng: 118.1, lat: 24.37, height: 10000, pitchRadiu: -50 });
 });
 const addTerrainFun = () => {
-  let terrainLayer = ffCesium.addTerrain("http://data.marsgis.cn/terrain");
+  let terrainLayer = ffCesium.dataServerClass.addTerrain("http://data.marsgis.cn/terrain");
   console.log("terrainLayer", terrainLayer);
 };
 const removeTerrainFun = () => {
-  ffCesium.removeTerrain();
+  ffCesium.dataServerClass.removeTerrain();
 };
 </script>
 <style scoped>

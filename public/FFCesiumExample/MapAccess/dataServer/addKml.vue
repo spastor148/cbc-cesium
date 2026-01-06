@@ -31,14 +31,14 @@ onMounted(() => {
 
 let dataSource = null;
 const readKmlFun = () => {
-  let promise = ffCesium.readKml("./data/kml/facilities.kml");
+  let promise = ffCesium.dataServerClass.readKml("./data/kml/facilities.kml");
   promise.then(function (data) {
-    dataSource = ffCesium.addKml(data);
+    dataSource = ffCesium.dataServerClass.addKml(data);
   });
 };
 
 const removeKmlFun = () => {
-  ffCesium.removeDataSource(dataSource);
+  ffCesium.dataServerClass.removeDataSource(dataSource);
 };
 </script>
 <style scoped>

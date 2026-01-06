@@ -31,7 +31,7 @@ onMounted(() => {
 
 let dataSource = null;
 const readGeojsonFun = () => {
-  let promise = ffCesium.readGeojson("./data/geojson/zhanhua.geojson");
+  let promise = ffCesium.dataServerClass.readGeojson("./data/geojson/zhanhua.geojson");
   promise.then(function (data) {
     let option = {
       stroke: "#0194FF",
@@ -39,12 +39,12 @@ const readGeojsonFun = () => {
       fill: "#000000",
       fillAlpha: 0.5,
     };
-    dataSource = ffCesium.addGeojson(data, option);
+    dataSource = ffCesium.dataServerClass.addGeojson(data, option);
   });
 };
 
 const removeGeojsonFun = () => {
-  ffCesium.removeDataSource(dataSource);
+  ffCesium.dataServerClass.removeDataSource(dataSource);
   dataSource = null;
 };
 </script>

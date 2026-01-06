@@ -25,7 +25,7 @@ onMounted(() => {
   ffCesium.setView({ lng: 118, lat: 24, height: 10000000, pitchRadiu: -90 });
   let url =
     "https://webst04.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}";
-  ffCesium.addCustomLayer(url);
+  ffCesium.mapServerClass.addCustomLayer(url);
 });
 </script>
 <style scoped>

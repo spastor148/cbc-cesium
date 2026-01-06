@@ -5,11 +5,12 @@ import WeatherEffectClass from "./libs/MapEffect/WeatherEffectClass.js";//天气
 import PolygonEffectClass from "./libs/MapEffect/PolygonEffectClass.js";//面效果类
 import PolylineEffectClass from "./libs/MapEffect/PolylineEffectClass.js";//线效果类
 
-
-
 //地图接入
-import { mapServer } from "./libs/MapAccess/mapServer.js";
-import { dataServer } from "./libs/MapAccess/dataServer.js";
+// import { mapServer } from "./libs/MapAccess/mapServer.js";
+// import { dataServer } from "./libs/MapAccess/dataServer.js";
+import MapServerClass from "./libs/MapAccess/MapServerClass.js";
+import DataServerClass from "./libs/MapAccess/DataServerClass.js";
+
 //地图基础操作
 import { mapTool } from "./libs/MapOperate/mapTool.js";
 import { addPrimitive } from "./libs/MapOperate/addPrimitive.js";
@@ -46,6 +47,8 @@ class FFCesium {
   polygonEffectClass;//地图效果--面效果类
   polylineEffectClass;//地图效果--线效果类
   addTypeClass;//高级示例--AddType类
+  mapServerClass;
+  dataServerClass;
   cesiumID;
   viewer;
   Cesium;
@@ -58,8 +61,8 @@ class FFCesium {
     let time1 = new Date().getTime();
     Object.assign(FFCesium.prototype, {
       //地图接入
-      ...mapServer,
-      ...dataServer,
+      // ...mapServer,
+      // ...dataServer,
       //地图操作
       ...mapTool,
       ...addPrimitive,
@@ -117,6 +120,9 @@ class FFCesium {
     this.polylineEffectClass = new PolylineEffectClass(this.viewer);//地图效果--线效果类 
     this.addTypeClass = new AddTypeClass(this.viewer);//高级示例--AddType类
 
+    // 初始化服务类
+    this.mapServerClass = new MapServerClass(this.viewer);
+    this.dataServerClass = new DataServerClass(this.viewer);
   }
   defaultMap() {
     let viewerOption = {
@@ -137,7 +143,8 @@ class FFCesium {
     };
     this.viewer = new Cesium.Viewer(this.cesiumID, viewerOption);
     //得加高德标准地图
-    let mapLayer = this.addGaodeLayer("https://webst04.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}");
+    var imgProvider = new Cesium.UrlTemplateImageryProvider({ url: "https://webst04.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}" });
+    let mapLayer = this.viewer.imageryLayers.addImageryProvider(imgProvider);
     this.setView({
       lng: 118.135,
       lat: 24.339,

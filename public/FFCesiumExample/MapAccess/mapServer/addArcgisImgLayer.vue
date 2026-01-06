@@ -24,7 +24,7 @@ onMounted(() => {
   }; //初始化
   ffCesium = new FFCesium("cesiumContainer", viewerOption);
   ffCesium.setView({ lng: 118, lat: 24, height: 10000000, pitchRadiu: -90 });
-  ffCesium.addArcgisImgLayer();
+  ffCesium.mapServerClass.addArcgisImgLayer();
 });
 </script>
 <style scoped>

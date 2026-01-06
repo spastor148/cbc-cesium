@@ -1,15 +1,9 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 50px; z-index: 999"
-      @click="addObliquePhotographyFun"
-    >
+    <button style="position: absolute; left: 100px; top: 50px; z-index: 999" @click="addObliquePhotographyFun">
       添加倾斜摄影
     </button>
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="removeObliquePhotographyFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="removeObliquePhotographyFun">
       移除倾斜摄影
     </button>
   </div>
@@ -20,7 +14,8 @@ import FFCesium from "FFCesium";
 let ffCesium = null;
 onMounted(() => {
   ffCesium = new FFCesium("cesiumContainer");
-  ffCesium.addTerrain("http://data.marsgis.cn/terrain");
+  console.log("ffCesium", ffCesium);
+  ffCesium.dataServerClass.addTerrain("http://data.marsgis.cn/terrain");
   ffCesium.setView({
     lng: 119.09490233012195,
     lat: 26.03963003753146,
@@ -50,14 +45,14 @@ const addObliquePhotographyFun = () => {
     dynamicScreenSpaceErrorFactor: 4.0,
     dynamicScreenSpaceErrorHeightFalloff: 0.25,
   };
-  let promise = ffCesium.addObliquePhotography(url, option);
+  let promise = ffCesium.dataServerClass.addObliquePhotography(url, option);
   promise.then((result) => {
     tileset = result;
     ffCesium.viewer.flyTo(tileset);
   });
 };
 const removeObliquePhotographyFun = () => {
-  ffCesium.removeObliquePhotography(tileset);
+  ffCesium.dataServerClass.removeObliquePhotography(tileset);
 };
 </script>
 <style scoped>

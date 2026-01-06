@@ -51,7 +51,7 @@ onMounted(() => {
     baseLayer: false,
   }; //初始化
   ffCesium = new FFCesium("cesiumContainer", viewerOption);
-  let mapLayer = ffCesium.addTdtImgLayer();
+  let mapLayer = ffCesium.mapServerClass.addTdtImgLayer();
   ffCesium.setView({
     lng: 118.135,
     lat: 24.489,
@@ -72,7 +72,7 @@ const findWMSServiceFun = () => {
       format: "image/png",
     },
   };
-  filterLayer = ffCesium.findWmsLayer(wmsOption);
+  filterLayer = ffCesium.dataServerClass.findWmsLayer(wmsOption);
 };
 
 let pointPrimitive = null;
@@ -96,7 +96,7 @@ const findWMSServiceByPointFun = () => {
       cql_filter: "DWITHIN(the_geom,Point(118.135 24.489),0.005,meters)",
     },
   };
-  filterLayer = ffCesium.findWmsLayer(wmsOption);
+  filterLayer = ffCesium.dataServerClass.findWmsLayer(wmsOption);
 };
 let polylinePrimitive = null;
 const findWMSServiceByRectFun = () => {
@@ -127,7 +127,7 @@ const findWMSServiceByRectFun = () => {
       cql_filter: "BBOX(the_geom, 118.145, 24.479, 118.165, 24.499)",
     },
   };
-  filterLayer = ffCesium.findWmsLayer(wmsOption);
+  filterLayer = ffCesium.dataServerClass.findWmsLayer(wmsOption);
 };
 
 //条件查询
@@ -144,12 +144,12 @@ const findWMSServiceByConditionFun = () => {
       cql_filter: "kind='2380'",
     },
   };
-  filterLayer = ffCesium.findWmsLayer(wmsOption);
+  filterLayer = ffCesium.dataServerClass.findWmsLayer(wmsOption);
 };
 
 const removeRun = () => {
   if (filterLayer) {
-    ffCesium.removeMapLayer(filterLayer);
+    ffCesium.mapServerClass.removeMapLayer(filterLayer);
     filterLayer = null;
   }
   if (pointPrimitive) {
