@@ -16,11 +16,12 @@ import EntityClass from "./libs/MapOperate/EntityClass.js";
 import MapActionClass from "./libs/MapOperate/MapActionClass.js";
 import ElementClass from "./libs/MapOperate/ElementClass.js";
 //地图采集
-import { elementGather } from "./libs/MapGather/elementGather.js";
-import { elementEdit } from "./libs/MapGather/elementEdit.js";
+import ElementGatherClass from "./libs/MapGather/ElementGatherClass.js";
+import ElementEditClass from "./libs/MapGather/ElementEditClass.js";
 //军事标绘采集与修改
-import { militaryPlottingGather } from "./libs/MapGather/militaryPlottingGather.js";
-import { militaryPlottingEdit } from "./libs/MapGather/militaryPlottingEdit.js";
+import MilitaryPlottingGatherClass from "./libs/MapGather/MilitaryPlottingGatherClass.js";
+import MilitaryPlottingEditClass from "./libs/MapGather/MilitaryPlottingEditClass.js";
+
 
 
 //空间分析
@@ -52,6 +53,10 @@ class FFCesium {
   entityClass;
   mapActionClass;
   elementClass;
+  elementGatherClass;
+  elementEditClass;
+  militaryPlottingGatherClass;
+  militaryPlottingEditClass;
   cesiumID;
   viewer;
   Cesium;
@@ -63,14 +68,6 @@ class FFCesium {
     //合并其他文件JS文件方法1231
     let time1 = new Date().getTime();
     Object.assign(FFCesium.prototype, {
-      //地图元素采集
-      ...elementGather,
-      //地图元素修改
-      ...elementEdit,
-      //军事标绘采集
-      ...militaryPlottingGather,
-      //军事标绘修改
-      ...militaryPlottingEdit,
       //空间分析
       ...judgeRelation,
       //地图通用工具包
@@ -124,6 +121,12 @@ class FFCesium {
     this.entityClass = new EntityClass(this.viewer);
     this.mapActionClass = new MapActionClass(this.viewer);
     this.elementClass = new ElementClass(this.viewer, this.cesiumID);
+
+    // 初始化地图采集类
+    this.elementGatherClass = new ElementGatherClass(this);
+    this.elementEditClass = new ElementEditClass(this);
+    this.militaryPlottingGatherClass = new MilitaryPlottingGatherClass(this);
+    this.militaryPlottingEditClass = new MilitaryPlottingEditClass(this);
   }
   defaultMap() {
     let viewerOption = {
