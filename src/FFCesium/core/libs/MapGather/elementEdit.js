@@ -4,14 +4,14 @@ import { createGatherPoint, createHalfGatherPoint } from "./common.js";
 export const elementEdit = {
   rectangleEdit(rectangle, callback) {
     console.log("rectangleEdit--rectangle", rectangle);
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     let the = this;
     let viewer = this.viewer;
     let currentPoint = null;
     rectangle.pointsId = [];
     document.getElementById(this.cesiumID).style.cursor = "pointer";
 
-    // 鐢熸垚杈圭晫缂栬緫鐐?
+    // 生成边界编辑点
     var degrees = rectangle.rectangle.coordinates.getValue();
     var cartesianArr = [];
     var westNorth = Cesium.Cartesian3.fromRadians(degrees.west, degrees.north);
@@ -39,14 +39,14 @@ export const elementEdit = {
       //     pixelSize: 8,
       //     outlineColor: Cesium.Color.BLACK,
       //     outlineWidth: 1,
-      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
       //   },
       // });
       point.flag = cartesian.flag;
       rectangle.pointsId.push(point.id);
     }
 
-    // 鐢熸垚涓績缂栬緫鐐?
+    // 生成中心编辑点
     var centerLng = (degrees.west + degrees.east) / 2;
     var centerLat = (degrees.north + degrees.south) / 2;
     var rect_center_cartesian = Cesium.Cartesian3.fromRadians(centerLng, centerLat);
@@ -61,15 +61,15 @@ export const elementEdit = {
     //     pixelSize: 8,
     //     outlineColor: Cesium.Color.BLACK,
     //     outlineWidth: 1,
-    //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+    //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
     //   },
     // });
     pointTemp.flag = "center";
     rectangle.pointsId.push(pointTemp.id);
 
-    //浜嬩欢
+    //事件
     rectangle.handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-    //鐐瑰嚮浜嬩欢
+    //点击事件
     rectangle.handler.setInputAction((event) => {
       let windowPosition = event.position;
       let pickedObject = viewer.scene.pick(windowPosition);
@@ -81,21 +81,21 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     rectangle.handler.setInputAction((event) => {
       if (!currentPoint) {
         return;
       }
       viewer.scene.screenSpaceCameraController.enableRotate = false;
       viewer.scene.screenSpaceCameraController.enableZoom = false;
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = viewer.camera.getPickRay(event.endPosition);
       var cartesian = viewer.scene.globe.pick(ray, viewer.scene);
       let points = [];
       if (!cartesian) {
         return;
       }
-      //鏇存柊褰撳墠鐐圭殑浣嶇疆
+      //更新当前点的位置
       currentPoint.position = cartesian;
       for (var i = 0; i < rectangle.pointsId.length; i++) {
         if (currentPoint.id == rectangle.pointsId[i]) {
@@ -113,7 +113,7 @@ export const elementEdit = {
         var radians = Cesium.Rectangle.fromDegrees(west, south, east, north);
         return radians;
       }
-      //褰撳墠绉诲姩鏄摢涓偣锛岃幏鍙栨柊鐨勭煩褰㈣竟鐣?
+      //当前移动是哪个点，获取新的矩形边界
       var ellipsoid = viewer.scene.globe.ellipsoid;
       var lngArr = [];
       var latArr = [];
@@ -156,13 +156,13 @@ export const elementEdit = {
         var rectInfoSouth = centerLat - rectHeight / 2;
         latArr.push(rectInfoSouth);
         //console.log("rectInfoEast",rectInfoEast);
-        //console.log("缁忓害缁勶細",lngArr);
+        //console.log("经度组：",lngArr);
       }
       var east = Math.max.apply(null, lngArr);
       var west = Math.min.apply(null, lngArr);
       var north = Math.max.apply(null, latArr);
       var south = Math.min.apply(null, latArr);
-      //鏇存柊鎵€鏈夌紪杈戠偣鐨勪綅缃?
+      //更新所有编辑点的位置
       for (var i = 0; i < rectangle.pointsId.length; i++) {
         var id = rectangle.pointsId[i];
         var entityTemp = viewer.entities.getById(id);
@@ -183,44 +183,44 @@ export const elementEdit = {
             }
           }
         }
-        //console.log("鍧愭爣锛?,west, south, east, north);
+        //console.log("坐标：",west, south, east, north);
         if (west >= east || south >= north) {
           currentPoint = undefined;
           return;
         }
         var radians = Cesium.Rectangle.fromDegrees(west, south, east, north);
-        //鏇存柊鐭╁舰浣嶇疆
+        //更新矩形位置
         rectangle.rectangle.coordinates = new Cesium.CallbackProperty(function (time, result) {
           return radians;
         }, false);
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉
+    // 对鼠标抬起事件的监听
     rectangle.handler.setInputAction((event) => {
       currentPoint = null;
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
     }, Cesium.ScreenSpaceEventType.LEFT_UP);
 
-    // 鍙冲嚮浜嬩欢鐨勭洃鍚?
+    // 右击事件的监听
     rectangle.handler.setInputAction((event) => {
       the.closeRectangleEdit(rectangle);
       callback(rectangle);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
   /**
-   * 鍏抽棴缂栬緫
+   * 关闭编辑
    * @param {*} rectangle
    * @returns
    */
   closeRectangleEdit(rectangle) {
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
+    //关闭鼠标提示
+    this.closeMouseTip();
     let the = this;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(the.cesiumID).style.cursor = "default";
-    //绉婚櫎鍦板浘浜嬩欢
+    //移除地图事件
     rectangle.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
     rectangle.handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     rectangle.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -244,22 +244,22 @@ export const elementEdit = {
   },
 
   /**
-   * 鍦嗙紪杈?
+   * 圆编辑
    * @param {*} circle
    * @param {*} callback
    */
   circleEdit(circle, callback) {
     console.log("circleEdit--circle", circle);
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
 
     let the = this;
     let viewer = this.viewer;
     let currentPoint = null;
     circle.pointsId = [];
-    let degreeMeter = 101194; //缁忓害1搴?101194绫?璇ュ€煎湪涓嶅悓鐨勭含搴︿笂涓嶅悓鐨勫€硷紝鍙互鏍规嵁鑷繁鐨勬儏鍐佃繘琛岃皟鏁?
+    let degreeMeter = 101194; //经度1度=101194米,该值在不同的纬度上不同的值，可以根据自己的情况进行调整
     document.getElementById(this.cesiumID).style.cursor = "pointer";
 
-    //鐢熸垚鍦嗗績缂栬緫鐐?
+    //生成圆心编辑点
     var pointCenter = createGatherPoint(circle.FFPosition, viewer);
     pointCenter.name = "circleCenterEdit_point";
     // let pointCenter = viewer.entities.add({
@@ -270,11 +270,11 @@ export const elementEdit = {
     //     pixelSize: 8,
     //     outlineColor: Cesium.Color.BLACK,
     //     outlineWidth: 1,
-    //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+    //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
     //   },
     // });
     circle.pointsId.push(pointCenter.id);
-    //鐢熸垚鍦嗚竟缂栬緫鐐?
+    //生成圆边编辑点
     var degreeTemp = circle.FFRadius / degreeMeter;
     var circleBorderCartesian = Cesium.Cartesian3.fromDegrees(circle.FFCenterPoint[0] + degreeTemp, circle.FFCenterPoint[1], circle.FFCenterPoint[2]);
     var pointBorder = createGatherPoint(circleBorderCartesian, viewer);
@@ -287,13 +287,13 @@ export const elementEdit = {
     //     pixelSize: 8,
     //     outlineColor: Cesium.Color.BLACK,
     //     outlineWidth: 1,
-    //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+    //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
     //   },
     // });
     circle.pointsId.push(pointBorder.id);
-    //浜嬩欢
+    //事件
     circle.handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-    //鐐瑰嚮浜嬩欢
+    //点击事件
     circle.handler.setInputAction((event) => {
       let windowPosition = event.position;
       let pickedObject = viewer.scene.pick(windowPosition);
@@ -304,9 +304,9 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     circle.handler.setInputAction((event) => {
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = viewer.camera.getPickRay(event.endPosition);
       var cartesian = viewer.scene.globe.pick(ray, viewer.scene);
       if (!cartesian) {
@@ -315,9 +315,9 @@ export const elementEdit = {
       if (currentPoint == null) {
         return;
       }
-      //鏇存柊褰撳墠鐐圭殑浣嶇疆
+      //更新当前点的位置
       currentPoint.position = cartesian;
-      //绉诲姩鐨勬槸鍗婂緞鐐癸紝鍒欐洿鏂板崐寰?
+      //移动的是半径点，则更新半径
       if (currentPoint.name == "circleBorderEdit_point") {
         viewer.scene.screenSpaceCameraController.enableRotate = false;
         viewer.scene.screenSpaceCameraController.enableZoom = false;
@@ -333,20 +333,20 @@ export const elementEdit = {
           return radius;
         }, false);
       }
-      //绉诲姩鐨勬槸鍦嗕腑蹇冿紝鍒欐洿鏂板渾涓績
+      //移动的是圆中心，则更新圆中心
       if (currentPoint.name == "circleCenterEdit_point") {
         viewer.scene.screenSpaceCameraController.enableRotate = false;
         viewer.scene.screenSpaceCameraController.enableZoom = false;
-        //鏇存柊鍦嗚竟缂栬緫鐐?
+        //更新圆边编辑点
         var circleRadius = circle.ellipse.semiMinorAxis.getValue();
-        //鍦嗗崐寰勬崲鎴愮背
-        var degreeTemp = circleRadius / degreeMeter; //璇ュ€煎湪涓嶅悓鐨勭含搴︿笂涓嶅悓鐨勫€硷紝鍙互鏍规嵁鑷繁鐨勬儏鍐佃繘琛岃皟鏁?
-        //鑾峰彇鍦嗗績锛堢粡搴︼級
+        //圆半径换成米
+        var degreeTemp = circleRadius / degreeMeter; //该值在不同的纬度上不同的值，可以根据自己的情况进行调整
+        //获取圆心（经度）
         var ellipsoid = viewer.scene.globe.ellipsoid;
         var cartographic = ellipsoid.cartesianToCartographic(currentPoint.position.getValue(Cesium.JulianDate.now()));
         var circleCenterLng = Cesium.Math.toDegrees(cartographic.longitude);
         var circleCenterLat = Cesium.Math.toDegrees(cartographic.latitude);
-        //鑾峰彇鍦嗚竟缁忕含搴?
+        //获取圆边经纬度
         var circleBorderCartesian = Cesium.Cartesian3.fromDegrees(circleCenterLng + degreeTemp, circleCenterLat, circle.FFCenterPoint[2]);
         for (var i = 0; i < circle.pointsId.length; i++) {
           var entityTemp = viewer.entities.getById(circle.pointsId[i]);
@@ -354,7 +354,7 @@ export const elementEdit = {
             entityTemp.position = circleBorderCartesian;
           }
         }
-        //鏇存柊鍦嗕腑蹇冪偣
+        //更新圆中心点
         var positionTemp = currentPoint.position.getValue(Cesium.JulianDate.now());
         circle.position = new Cesium.CallbackProperty(function (time, result) {
           return positionTemp;
@@ -362,26 +362,26 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉
+    // 对鼠标抬起事件的监听
     circle.handler.setInputAction((event) => {
       currentPoint = null;
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
     }, Cesium.ScreenSpaceEventType.LEFT_UP);
 
-    // 鍙冲嚮浜嬩欢鐨勭洃鍚?
+    // 右击事件的监听
     circle.handler.setInputAction((event) => {
       the.closeCircleEdit(circle);
       callback(circle);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
   closeCircleEdit(circle) {
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
+    //关闭鼠标提示
+    this.closeMouseTip();
     let the = this;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(the.cesiumID).style.cursor = "default";
-    //绉婚櫎鍦板浘浜嬩欢
+    //移除地图事件
     circle.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
     circle.handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     circle.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -400,7 +400,7 @@ export const elementEdit = {
     // circle.FFCenterPoint = [lng, lat, circle.FFCenterPoint[2]];
     // circle.FFRadius = circle.ellipse.semiMinorAxis.getValue();
     // circle.FFPosition = circle_center_cartesian;
-    //璁剧疆灞炴€?
+    //设置属性
     the.setAttributeForEntity(circle, circle.FFOption, "circle");
 
     the.removeFFEntityIDArr(circle.pointsId);
@@ -409,12 +409,12 @@ export const elementEdit = {
   },
 
   /**
-   * 闈慨鏀?
+   * 面修改
    * @param {*} polygon
    * @param {*} callback
    */
   polygonEdit(polygon, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     let the = this;
     let viewer = this.viewer;
     polygon.pointsId = [];
@@ -424,7 +424,7 @@ export const elementEdit = {
       polygon.id = "polygonEdit_" + new Date().getTime() + "_" + Math.random();
     }
     document.getElementById(this.cesiumID).style.cursor = "pointer";
-    //鍙犲姞缂栬緫鐐?
+    //叠加编辑点
     for (var i = 0; i < polygon.FFPosition.length; i++) {
       var cartesian = polygon.FFPosition[i];
       var point = createGatherPoint(cartesian, viewer);
@@ -437,12 +437,12 @@ export const elementEdit = {
       //     pixelSize: 8,
       //     outlineColor: Cesium.Color.BLACK,
       //     outlineWidth: 1,
-      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
       //   },
       // });
       polygon.pointsId.push(point.id);
     }
-    //鍙犲姞half閲囬泦鐐?
+    //叠加half采集点
     for (var i = 0; i < polygon.FFPosition.length; i++) {
       let cartesian = null;
       if (i == polygon.FFPosition.length - 1) {
@@ -468,7 +468,7 @@ export const elementEdit = {
       //     pixelSize: 8,
       //     outlineColor: Cesium.Color.BLACK,
       //     outlineWidth: 1,
-      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
       //   },
       // };
       if (i == polygon.pointsId.length - 1) {
@@ -481,7 +481,7 @@ export const elementEdit = {
       polygon.halfPointsId.push(pointEntity.id);
     }
 
-    //浜嬩欢
+    //事件
     polygon.handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
     polygon.handler.setInputAction((event) => {
       let windowPosition = event.position;
@@ -504,20 +504,20 @@ export const elementEdit = {
           //     pixelSize: 8,
           //     outlineColor: Cesium.Color.BLACK,
           //     outlineWidth: 1,
-          //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+          //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
           //   },
           // });
           var point = createGatherPoint(cartesian, viewer);
           point.name = "polygonEdit_point";
           currentPoint = point;
-          //绾垮崐鐐瑰彉鎴愮嚎涓婄偣
+          //线半点变成线上点
           polygon.pointsId.splice(entity.positionFlag[0] + 1, 0, point.id);
-          //鍒犻櫎鎵€鏈夌嚎鍗婄偣
+          //删除所有线半点
           for (var i = 0; i < polygon.halfPointsId.length; i++) {
             viewer.entities.remove(viewer.entities.getById(polygon.halfPointsId[i]));
           }
           polygon.halfPointsId = [];
-          //閲嶆柊鐢熸垚鎵€鏈夌嚎鍗婄偣
+          //重新生成所有线半点
           console.log("polygon.pointsId123", polygon.pointsId);
           for (var i = 0; i < polygon.pointsId.length; i++) {
             var oneTemp = null;
@@ -544,7 +544,7 @@ export const elementEdit = {
             //     pixelSize: 8,
             //     outlineColor: Cesium.Color.BLACK,
             //     outlineWidth: 1,
-            //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+            //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
             //   },
             // };
             if (i == polygon.pointsId.length - 1) {
@@ -559,7 +559,7 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     polygon.handler.setInputAction((event) => {
       if (currentPoint && currentPoint.name == "polygonEdit_point") {
         viewer.scene.screenSpaceCameraController.enableRotate = false;
@@ -580,7 +580,7 @@ export const elementEdit = {
           }
         }
 
-        //鏇存柊绾夸笂涓績鐐逛綅缃俊鎭?
+        //更新线上中心点位置信息
         for (var i = 0; i < polygon.halfPointsId.length; i++) {
           var entityTemp = viewer.entities.getById(polygon.halfPointsId[i]);
           if (typeof entityTemp != "undefined") {
@@ -604,26 +604,26 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉
+    // 对鼠标抬起事件的监听
     polygon.handler.setInputAction((event) => {
       currentPoint = null;
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
     }, Cesium.ScreenSpaceEventType.LEFT_UP);
 
-    // 鍙冲嚮浜嬩欢鐨勭洃鍚?
+    // 右击事件的监听
     polygon.handler.setInputAction((event) => {
       the.closePolygonEdit(polygon);
       callback(polygon);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
   closePolygonEdit(polygon) {
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
+    //关闭鼠标提示
+    this.closeMouseTip();
     let the = this;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(the.cesiumID).style.cursor = "default";
-    //绉婚櫎鍦板浘浜嬩欢
+    //移除地图事件
     polygon.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
     polygon.handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     polygon.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -640,12 +640,12 @@ export const elementEdit = {
     return polygon;
   },
   /**
-   * 绾跨紪杈?
+   * 线编辑
    * @param {*} polyline
    * @param {*} callback
    */
   polylineEdit(polyline, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     let the = this;
     let viewer = this.viewer;
 
@@ -657,7 +657,7 @@ export const elementEdit = {
       polyline.id = "polylineEdit_" + new Date().getTime() + "_" + Math.random();
     }
     document.getElementById(this.cesiumID).style.cursor = "pointer";
-    //鍙犲姞缂栬緫鐐?
+    //叠加编辑点
     for (var i = 0; i < polyline.FFPosition.length; i++) {
       var cartesian = polyline.FFPosition[i];
       // var point = viewer.entities.add({
@@ -668,14 +668,14 @@ export const elementEdit = {
       //     pixelSize: 8,
       //     outlineColor: Cesium.Color.BLACK,
       //     outlineWidth: 1,
-      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
       //   },
       // });
       var point = createGatherPoint(cartesian, viewer);
       point.name = "polylineEdit_point";
       polyline.pointsId.push(point.id);
     }
-    //鍙犲姞half閲囬泦鐐?
+    //叠加half采集点
     for (var i = 0; i < polyline.FFPosition.length - 1; i++) {
       var halfX = (polyline.FFPosition[i].x + polyline.FFPosition[i + 1].x) / 2;
       var halfY = (polyline.FFPosition[i].y + polyline.FFPosition[i + 1].y) / 2;
@@ -693,14 +693,14 @@ export const elementEdit = {
       //     pixelSize: 8,
       //     outlineColor: Cesium.Color.BLACK,
       //     outlineWidth: 1,
-      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+      //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
       //   },
       // };
       pointEntity.positionFlag = [i, i + 1];
       // var point = viewer.entities.add(pointEntity);
       polyline.halfPointsId.push(pointEntity.id);
     }
-    //浜嬩欢
+    //事件
     polyline.handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
     polyline.handler.setInputAction((event) => {
       let windowPosition = event.position;
@@ -710,7 +710,7 @@ export const elementEdit = {
         if (entity.name === "polylineEdit_point") {
           currentPoint = entity;
         }
-        //鐐瑰嚮涓棿鐐瑰垯鐢熸垚鏂扮殑涓棿鐐?
+        //点击中间点则生成新的中间点
         if (entity.name === "polylineEdit_half_point") {
           let ellipsoid = viewer.scene.globe.ellipsoid;
           let cartesian = viewer.camera.pickEllipsoid(windowPosition, ellipsoid);
@@ -725,21 +725,21 @@ export const elementEdit = {
           //     pixelSize: 8,
           //     outlineColor: Cesium.Color.BLACK,
           //     outlineWidth: 1,
-          //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+          //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
           //   },
           // };
           // var point = viewer.entities.add(entityTemp);
           var point = createGatherPoint(cartesian, viewer);
           point.name = "polylineEdit_point";
           currentPoint = point;
-          //绾垮崐鐐瑰彉鎴愮嚎涓婄偣
+          //线半点变成线上点
           polyline.pointsId.splice(entity.positionFlag[0] + 1, 0, point.id);
-          //鍒犻櫎鎵€鏈夌嚎鍗婄偣
+          //删除所有线半点
           for (var i = 0; i < polyline.halfPointsId.length; i++) {
             viewer.entities.remove(viewer.entities.getById(polyline.halfPointsId[i]));
           }
           polyline.halfPointsId = [];
-          //閲嶆柊鐢熸垚鎵€鏈夌嚎鍗婄偣
+          //重新生成所有线半点
           //console.log("pointsId",pointsId);
           for (var i = 0; i < polyline.pointsId.length - 1; i++) {
             var oneTemp = viewer.entities.getById(polyline.pointsId[i]).position._value;
@@ -758,7 +758,7 @@ export const elementEdit = {
             //     pixelSize: 8,
             //     outlineColor: Cesium.Color.BLACK,
             //     outlineWidth: 1,
-            //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //璐村湴
+            //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //贴地
             //   },
             // };
             pointEntity.positionFlag = [i, i + 1];
@@ -769,14 +769,14 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     polyline.handler.setInputAction((event) => {
       //console.log("currentPoint11",currentPoint);
       if (currentPoint && currentPoint.name == "polylineEdit_point") {
         viewer.scene.screenSpaceCameraController.enableRotate = false;
         viewer.scene.screenSpaceCameraController.enableZoom = false;
-        //绾夸笂鐨勭偣
-        //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+        //线上的点
+        //获取加载地形后对应的经纬度和高程：地标坐标
         var ray = viewer.camera.getPickRay(event.endPosition);
         var cartesian = viewer.scene.globe.pick(ray, viewer.scene);
         let points = [];
@@ -793,7 +793,7 @@ export const elementEdit = {
           }
         }
         polyline.polyline.positions = new Cesium.CallbackProperty(function (time, result) {
-          //鏇存柊绾夸笂涓績鐐逛綅缃俊鎭?
+          //更新线上中心点位置信息
           for (var i = 0; i < polyline.halfPointsId.length; i++) {
             var entityTemp = viewer.entities.getById(polyline.halfPointsId[i]);
             if (typeof entityTemp != "undefined") {
@@ -813,14 +813,14 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 榧犳爣寮硅捣鐨勭洃鍚?
+    // 鼠标弹起的监听
     polyline.handler.setInputAction((event) => {
       currentPoint = null;
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
     }, Cesium.ScreenSpaceEventType.LEFT_UP);
 
-    // 鍙冲嚮浜嬩欢鐨勭洃鍚?
+    // 右击事件的监听
     polyline.handler.setInputAction((event) => {
       the.closePolylineEdit(polyline);
       callback(polyline);
@@ -828,12 +828,12 @@ export const elementEdit = {
   },
 
   closePolylineEdit(polyline) {
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
+    //关闭鼠标提示
+    this.closeMouseTip();
     let the = this;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(the.cesiumID).style.cursor = "default";
-    //绉婚櫎鍦板浘浜嬩欢
+    //移除地图事件
     polyline.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
     polyline.handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     polyline.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -851,9 +851,9 @@ export const elementEdit = {
     return polyline;
   },
 
-  //鐐逛慨鏀?
+  //点修改
   pointEdit(point, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     let the = this;
     let viewer = this.viewer;
     point.timer = null;
@@ -867,7 +867,7 @@ export const elementEdit = {
     }
     document.getElementById(this.cesiumID).style.cursor = "pointer";
     point.handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-    //榧犳爣鐐瑰嚮浜嬩欢
+    //鼠标点击事件
     point.handler.setInputAction((event) => {
       let pickedObject = viewer.scene.pick(event.position);
       if (Cesium.defined(pickedObject)) {
@@ -877,10 +877,10 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     point.handler.setInputAction((event) => {
       if (point.isEditting) {
-        //闄愬埗鍦板浘鎿嶄綔
+        //限制地图操作
         viewer.scene.screenSpaceCameraController.enableRotate = false;
         viewer.scene.screenSpaceCameraController.enableZoom = false;
         var ray = viewer.camera.getPickRay(event.endPosition);
@@ -892,7 +892,7 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉(缁撴潫鐐归噰闆?
+    // 对鼠标抬起事件的监听(结束点采集)
     point.handler.setInputAction((event) => {
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
@@ -905,12 +905,12 @@ export const elementEdit = {
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
   closePointEdit(point) {
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
+    //关闭鼠标提示
+    this.closeMouseTip();
     let the = this;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(the.cesiumID).style.cursor = "default";
-    //绉婚櫎鍦板浘浜嬩欢
+    //移除地图事件
     point.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
     point.handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     point.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -920,9 +920,9 @@ export const elementEdit = {
     point.point.outlineWidth = 0;
     the.setAttributeForEntity(point, point.FFOption, "point");
   },
-  //鍥炬爣鐐逛慨鏀?
+  //图标点修改
   billboardEdit(billboard, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇鍥炬爣鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住图标点移动，右击即可完成采集");
     let the = this;
     let viewer = this.viewer;
     billboard.timer = null;
@@ -933,7 +933,7 @@ export const elementEdit = {
     }
     document.getElementById(this.cesiumID).style.cursor = "pointer";
     billboard.handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-    //榧犳爣鐐瑰嚮浜嬩欢
+    //鼠标点击事件
     billboard.handler.setInputAction((event) => {
       let pickedObject = viewer.scene.pick(event.position);
       console.log("pickedObject1232", pickedObject);
@@ -945,10 +945,10 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     billboard.handler.setInputAction((event) => {
       if (billboard.isEditting) {
-        //闄愬埗鍦板浘鎿嶄綔
+        //限制地图操作
         viewer.scene.screenSpaceCameraController.enableRotate = false;
         viewer.scene.screenSpaceCameraController.enableZoom = false;
         var ray = viewer.camera.getPickRay(event.endPosition);
@@ -960,7 +960,7 @@ export const elementEdit = {
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉(缁撴潫鐐归噰闆?
+    // 对鼠标抬起事件的监听(结束点采集)
     billboard.handler.setInputAction((event) => {
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
@@ -973,12 +973,12 @@ export const elementEdit = {
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
   closeBillboardEdit(billboard) {
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
+    //关闭鼠标提示
+    this.closeMouseTip();
     let the = this;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(the.cesiumID).style.cursor = "default";
-    //绉婚櫎鍦板浘浜嬩欢
+    //移除地图事件
     billboard.handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
     billboard.handler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     billboard.handler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
@@ -988,4 +988,3 @@ export const elementEdit = {
     the.setAttributeForEntity(billboard, billboard.FFOption, "billboard");
   }
 };
-

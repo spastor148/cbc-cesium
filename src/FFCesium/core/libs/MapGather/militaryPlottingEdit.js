@@ -2,31 +2,31 @@
 import { createGatherPoint } from "./common.js";
 import { xp } from "../../dependentLib/plotHelper/algorithm.js";
 export const militaryPlottingEdit = {
-  //涓€娆″彧鑳芥湁涓€涓慨鏀逛簨浠?
+  //一次只能有一个修改事件
   militaryPlottingEditHandler: null,
-  //鍐涗簨淇敼鐐?
+  //军事修改点
   militaryPlottingEditPoints: [],
   /**
-   * 缁撴潫鍐涗簨鏍囩粯缂栬緫鐨勫鐞?
+   * 结束军事标绘编辑的处理
    */
   endMilitaryPlottingEditDeal() {
-    //榧犳爣鍙樻垚榛樿
+    //鼠标变成默认
     document.getElementById(this.cesiumID).style.cursor = "default";
-    //绉婚櫎浜嬩欢
+    //移除事件
     if (this.militaryPlottingEditHandler) {
       this.militaryPlottingEditHandler.destroy();
       this.militaryPlottingEditHandler = null;
     }
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
-    //绉婚櫎鏍囨敞鐐?
+    //关闭鼠标提示
+    this.closeMouseTip();
+    //移除标注点
     for (var i = 0; i < this.militaryPlottingEditPoints.length; i++) {
       this.viewer.entities.remove(this.militaryPlottingEditPoints[i]);
     }
     this.militaryPlottingEditPoints = [];
   },
   /**
-   * 鍏抽棴闆嗙粨鍦伴噰闆?
+   * 关闭集结地采集
    * @param {*} entityObj
    * @returns
    */
@@ -36,18 +36,18 @@ export const militaryPlottingEdit = {
       entityObj.FFPosition
     );
     entityObj.FFCoordinates = lngLatHeightArr;
-    //缁撴潫澶勭悊
+    //结束处理
     this.endMilitaryPlottingEditDeal();
     return entityObj;
   },
 
   /**
-   * 闆嗙粨鍦拌繘鍏ョ紪杈?
+   * 集结地进入编辑
    * @param {*} entityObj
    * @param {*} callback
    */
   rendezvousEdit(entityObj, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     document.getElementById(this.cesiumID).style.cursor = "pointer";
     let the = this;
     let isMoving = false;
@@ -61,11 +61,11 @@ export const militaryPlottingEdit = {
       pointTemp.flag = "anchor";
       the.militaryPlottingEditPoints.push(pointTemp);
     }
-    //娣诲姞浜嬩欢
+    //添加事件
     this.militaryPlottingEditHandler = new Cesium.ScreenSpaceEventHandler(
       this.viewer.scene.canvas
     );
-    //鐐瑰嚮浜嬩欢
+    //点击事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       var position = event.position;
       if (!Cesium.defined(position)) {
@@ -94,7 +94,7 @@ export const militaryPlottingEdit = {
         }
         var entity = pickedObject.id;
         //console.log("entity",entity);
-        //濡傛灉鐐瑰嚮鐨勪笉鏄偣锛涘垯杩斿洖
+        //如果点击的不是点；则返回
         if (entity.flag != "anchor") {
           return;
         }
@@ -102,7 +102,7 @@ export const militaryPlottingEdit = {
         isMoving = true;
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉
+    // 对鼠标抬起事件的监听
     this.militaryPlottingEditHandler.setInputAction((event) => {
       pickedAnchor = null;
       isMoving = false;
@@ -110,7 +110,7 @@ export const militaryPlottingEdit = {
       the.viewer.scene.screenSpaceCameraController.enableZoom = true;
     }, Cesium.ScreenSpaceEventType.LEFT_UP);
 
-    //绉诲姩浜嬩欢
+    //移动事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       if (!isMoving || !pickedAnchor) {
         return;
@@ -138,16 +138,16 @@ export const militaryPlottingEdit = {
         the.cartesian3ArrToLngLatHeightArr(gatherPosition);
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    //鍙冲嚮浜嬩欢
+    //右击事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       // entityObj.FFPlotKeyPoints =
       //   the.cartesian3ArrToLngLatHeightArr(gatherPosition);
-      //鍏抽棴缂栬緫
+      //关闭编辑
       the.closeDoubleArrowEdit(entityObj);
       callback(entityObj);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
-    //閲嶇粯
+    //重绘
     entityObj.polygon.hierarchy = new Cesium.CallbackProperty(function () {
       if (gatherPosition.length > 2) {
         var res = the.fineGatheringPlace(gatherPosition);
@@ -162,7 +162,7 @@ export const militaryPlottingEdit = {
     }, false);
   },
   /**
-   * 娣诲姞闆嗙粨鍦?
+   * 添加集结地
    * @param {*} lnglatArr
    * @param {*} option
    */
@@ -192,7 +192,7 @@ export const militaryPlottingEdit = {
   },
 
   /**
-   * 鍏抽棴鍙岀澶寸紪杈?
+   * 关闭双箭头编辑
    * @param {*} entityObj
    * @returns
    */
@@ -202,16 +202,16 @@ export const militaryPlottingEdit = {
       entityObj.FFPosition
     );
     entityObj.FFCoordinates = lngLatHeightArr;
-    //缁撴潫澶勭悊
+    //结束处理
     this.endMilitaryPlottingEditDeal();
     return entityObj;
   },
   /**
-   * 鍙屽嚮绠ご杩涘叆缂栬緫
+   * 双击箭头进入编辑
    * @param {*} entityObj
    */
   doubleArrowEdit(entityObj, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     document.getElementById(this.cesiumID).style.cursor = "pointer";
 
     let the = this;
@@ -226,11 +226,11 @@ export const militaryPlottingEdit = {
       pointTemp.flag = "anchor";
       the.militaryPlottingEditPoints.push(pointTemp);
     }
-    //娣诲姞浜嬩欢
+    //添加事件
     this.militaryPlottingEditHandler = new Cesium.ScreenSpaceEventHandler(
       this.viewer.scene.canvas
     );
-    //鐐瑰嚮浜嬩欢
+    //点击事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       var position = event.position;
       if (!Cesium.defined(position)) {
@@ -259,7 +259,7 @@ export const militaryPlottingEdit = {
         }
         var entity = pickedObject.id;
         //console.log("entity",entity);
-        //濡傛灉鐐瑰嚮鐨勪笉鏄偣锛涘垯杩斿洖
+        //如果点击的不是点；则返回
         if (entity.flag != "anchor") {
           return;
         }
@@ -267,14 +267,14 @@ export const militaryPlottingEdit = {
         isMoving = true;
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉
+    // 对鼠标抬起事件的监听
     this.militaryPlottingEditHandler.setInputAction((event) => {
       pickedAnchor = null;
       isMoving = false;
       the.viewer.scene.screenSpaceCameraController.enableRotate = true;
       the.viewer.scene.screenSpaceCameraController.enableZoom = true;
     }, Cesium.ScreenSpaceEventType.LEFT_UP);
-    //绉诲姩浜嬩欢
+    //移动事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       if (!isMoving || !pickedAnchor) {
         return;
@@ -301,21 +301,21 @@ export const militaryPlottingEdit = {
         the.cartesian3ArrToLngLatHeightArr(gatherPosition);
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    //鍙冲嚮浜嬩欢
+    //右击事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       // entityObj.FFPlotKeyPoints =
       //   the.cartesian3ArrToLngLatHeightArr(gatherPosition);
-      //鍏抽棴缂栬緫
+      //关闭编辑
       the.closeDoubleArrowEdit(entityObj);
       callback(entityObj);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
-    //閲嶇粯
+    //重绘
     entityObj.polygon.hierarchy = new Cesium.CallbackProperty(function () {
       if (gatherPosition.length > 2) {
         try {
           var lonLats = the.cartesian3ArrToLngLatHeightArr(gatherPosition);
-          //鍘婚噸
+          //去重
           the.coordinateArrDeduplication(lonLats);
           var doubleArrow = xp.algorithm.doubleArrow(lonLats);
           var positions = doubleArrow.polygonalPoint;
@@ -337,7 +337,7 @@ export const militaryPlottingEdit = {
     }, false);
   },
   /**
-   * 鍙犲姞鍙岀澶?
+   * 叠加双箭头
    * @param {*} lnglatArr
    * @param {*} option
    * @returns
@@ -348,9 +348,9 @@ export const militaryPlottingEdit = {
     var attackObj = xp.algorithm.doubleArrow(lnglatArr);
     console.log("attackObj", attackObj);
     var arrow = attackObj.polygonalPoint;
-    console.log("鏍规嵁绠ご鍏抽敭鐐硅幏鍙栫澶存暟鎹細", arrow);
+    console.log("根据箭头关键点获取箭头数据：", arrow);
     var pHierarchy = new Cesium.PolygonHierarchy(arrow);
-    //闂悎铏氱嚎
+    //闭合虚线
     var firstPoint = arrow[0];
     arrow.push(firstPoint);
     var bData = {
@@ -371,13 +371,13 @@ export const militaryPlottingEdit = {
       option,
       "FFDoubleArrowEntity"
     );
-    //鑾峰彇鐩寸嚎绠ご鍏抽敭鍧愭爣鏁版嵁
+    //获取直线箭头关键坐标数据
     doubleArrowEntity.FFPlotKeyPoints = lnglatArr;
     return doubleArrowEntity;
   },
 
   /**
-   * 鍏抽棴鏀诲嚮绠ご淇敼
+   * 关闭攻击箭头修改
    * @param {*} entityObj
    * @returns
    */
@@ -387,18 +387,18 @@ export const militaryPlottingEdit = {
       entityObj.FFPosition
     );
     entityObj.FFCoordinates = lngLatHeightArr;
-    //缁撴潫澶勭悊
+    //结束处理
     this.endMilitaryPlottingEditDeal();
     return entityObj;
   },
 
   /**
-   * 鏀诲嚮绠ご杩涘叆淇敼
+   * 攻击箭头进入修改
    * @param {*} entityObj
    * @param {*} callback
    */
   tailedAttackArrowEdit(entityObj, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     document.getElementById(this.cesiumID).style.cursor = "pointer";
 
     let the = this;
@@ -413,11 +413,11 @@ export const militaryPlottingEdit = {
       pointTemp.flag = "anchor";
       the.militaryPlottingEditPoints.push(pointTemp);
     }
-    //娣诲姞浜嬩欢
+    //添加事件
     this.militaryPlottingEditHandler = new Cesium.ScreenSpaceEventHandler(
       this.viewer.scene.canvas
     );
-    //鐐瑰嚮浜嬩欢
+    //点击事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       var position = event.position;
       if (!Cesium.defined(position)) {
@@ -446,7 +446,7 @@ export const militaryPlottingEdit = {
         }
         var entity = pickedObject.id;
         //console.log("entity",entity);
-        //濡傛灉鐐瑰嚮鐨勪笉鏄偣锛涘垯杩斿洖
+        //如果点击的不是点；则返回
         if (entity.flag != "anchor") {
           return;
         }
@@ -454,14 +454,14 @@ export const militaryPlottingEdit = {
         isMoving = true;
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉
+    // 对鼠标抬起事件的监听
     this.militaryPlottingEditHandler.setInputAction((event) => {
       pickedAnchor = null;
       isMoving = false;
       the.viewer.scene.screenSpaceCameraController.enableRotate = true;
       the.viewer.scene.screenSpaceCameraController.enableZoom = true;
     }, Cesium.ScreenSpaceEventType.LEFT_UP);
-    //绉诲姩浜嬩欢
+    //移动事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       if (!isMoving || !pickedAnchor) {
         return;
@@ -488,16 +488,16 @@ export const militaryPlottingEdit = {
         the.cartesian3ArrToLngLatHeightArr(gatherPosition);
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    //鍙冲嚮浜嬩欢
+    //右击事件
     this.militaryPlottingEditHandler.setInputAction(function (event) {
       // entityObj.FFPlotKeyPoints =
       //   the.cartesian3ArrToLngLatHeightArr(gatherPosition);
-      //鍏抽棴缂栬緫
+      //关闭编辑
       the.closeTailedAttackArrowEdit(entityObj);
       callback(entityObj);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
-    //閲嶇粯
+    //重绘
     entityObj.polygon.hierarchy = new Cesium.CallbackProperty(function () {
       if (gatherPosition.length > 1) {
         var lonLats = the.cartesian3ArrToLngLatHeightArr(gatherPosition);
@@ -517,7 +517,7 @@ export const militaryPlottingEdit = {
     }, false);
   },
   /**
-   * 娣诲姞鏀诲嚮绠ご
+   * 添加攻击箭头
    * @param {*} lnglatArr
    * @param {*} option
    * @returns
@@ -528,7 +528,7 @@ export const militaryPlottingEdit = {
     var attackObj = xp.algorithm.tailedAttackArrow(lnglatArr);
     var arrow = attackObj.polygonalPoint;
     console.log("attackObj:", attackObj);
-    console.log("鏍规嵁绠ご鍏抽敭鐐硅幏鍙栫澶存暟鎹細", arrow);
+    console.log("根据箭头关键点获取箭头数据：", arrow);
     var pHierarchy = new Cesium.PolygonHierarchy(arrow);
     var bData = {
       polygon: new Cesium.PolygonGraphics({
@@ -557,13 +557,13 @@ export const militaryPlottingEdit = {
       option,
       "FFTailedAttackArrowEntity"
     );
-    //鑾峰彇鐩寸嚎绠ご鍏抽敭鍧愭爣鏁版嵁
+    //获取直线箭头关键坐标数据
     tailedAttackArrowEntity.FFPlotKeyPoints = lnglatArr;
     return tailedAttackArrowEntity;
   },
 
   /**
-   * 鍙犲姞鐩寸嚎绠ご鐨勬爣缁?
+   * 叠加直线箭头的标绘
    * @param {*} lnglatArr
    * @param {*} option
    * @returns
@@ -571,7 +571,7 @@ export const militaryPlottingEdit = {
   addStraightArrowEntity(lnglatArr, option) {
     let newOption = Object.assign({}, option);
     var arrow = xp.algorithm.fineArrow(lnglatArr[0], lnglatArr[1]);
-    console.log("鏍规嵁绠ご鍏抽敭鐐硅幏鍙栫澶存暟鎹細", arrow);
+    console.log("根据箭头关键点获取箭头数据：", arrow);
     var pHierarchy = new Cesium.PolygonHierarchy(arrow);
     var bData = {
       polygon: new Cesium.PolygonGraphics({
@@ -591,12 +591,12 @@ export const militaryPlottingEdit = {
       option,
       "FFStraightArrowEntity"
     );
-    //鑾峰彇鐩寸嚎绠ご鍏抽敭鍧愭爣鏁版嵁
+    //获取直线箭头关键坐标数据
     straightArrowEntity.FFPlotKeyPoints = lnglatArr;
     return straightArrowEntity;
   },
   /**
-   * 鍏抽棴鐩寸嚎绠ご淇敼
+   * 关闭直线箭头修改
    * @param {*} entityObj
    * @returns
    */
@@ -606,17 +606,17 @@ export const militaryPlottingEdit = {
       entityObj.FFPosition
     );
     entityObj.FFCoordinates = lngLatHeightArr;
-    //缁撴潫澶勭悊
+    //结束处理
     this.endMilitaryPlottingEditDeal();
     return entityObj;
   },
   /**
-   * 鐩寸嚎绠ご淇敼
+   * 直线箭头修改
    * @param {*} entityObj
    * @param {*} callback
    */
   straightArrowEdit(entityObj, callback) {
-    this.mapToolClass.openMouseTip("鍘嬩綇缂栬緫鐐圭Щ鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("压住编辑点移动，右击即可完成采集");
     document.getElementById(this.cesiumID).style.cursor = "pointer";
 
     let the = this;
@@ -631,7 +631,7 @@ export const militaryPlottingEdit = {
       pointTemp.flag = "anchor";
       the.militaryPlottingEditPoints.push(pointTemp);
     }
-    //娣诲姞浜嬩欢
+    //添加事件
     this.militaryPlottingEditHandler = new Cesium.ScreenSpaceEventHandler(
       this.viewer.scene.canvas
     );
@@ -664,7 +664,7 @@ export const militaryPlottingEdit = {
         }
         var entity = pickedObject.id;
         //console.log("entity",entity);
-        //濡傛灉鐐瑰嚮鐨勪笉鏄偣锛涘垯杩斿洖
+        //如果点击的不是点；则返回
         if (entity.flag != "anchor") {
           return;
         }
@@ -673,7 +673,7 @@ export const militaryPlottingEdit = {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉
+    // 对鼠标抬起事件的监听
     this.militaryPlottingEditHandler.setInputAction((event) => {
       pickedAnchor = null;
       isMoving = false;
@@ -708,12 +708,12 @@ export const militaryPlottingEdit = {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
     this.militaryPlottingEditHandler.setInputAction(function (event) {
-      //鍏抽棴缂栬緫
+      //关闭编辑
       the.closeStraightArrowEdit(entityObj);
       callback(entityObj);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
-    //閲嶇粯
+    //重绘
     entityObj.polygon.hierarchy = new Cesium.CallbackProperty(function () {
       if (gatherPosition.length > 1) {
         var p1 = gatherPosition[0];
@@ -736,4 +736,3 @@ export const militaryPlottingEdit = {
     }, false);
   },
 };
-

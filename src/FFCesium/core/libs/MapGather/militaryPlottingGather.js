@@ -3,11 +3,11 @@ import { createGatherPoint } from "./common.js";
 import { xp } from "../../dependentLib/plotHelper/algorithm.js";
 import { P } from "../../dependentLib/plotHelper/plotUtil.js";
 export const militaryPlottingGather = {
-  //涓€娆″彧鑳界敱涓€涓噰闆嗕簨浠?militaryPlottingGatherHandler
+  //一次只能由一个采集事件,militaryPlottingGatherHandler
   militaryPlottingGatherHandler: null,
-  //鍐涗簨鏍囩粯鐐?
+  //军事标绘点
   militaryPlottingGatherPoints: [],
-  //杩涘叆閲囬泦鍒颁竴鍗婏紝寮哄埗鍏抽棴閲囬泦
+  //进入采集到一半，强制关闭采集
   forceMilitaryGatherEnd() {
     console.log("this.militaryPlottingGatherHandler", this.militaryPlottingGatherHandler);
     if (this.militaryPlottingGatherHandler) {
@@ -20,25 +20,25 @@ export const militaryPlottingGather = {
     }
     this.endMilitaryPlottingGatherDeal();
   },
-  //缁撴潫閲囬泦Deal
+  //结束采集Deal
   endMilitaryPlottingGatherDeal() {
     console.log("endMilitaryPlottingGatherDeal");
-    //榧犳爣鍙樻垚榛樿
+    //鼠标变成默认
     document.getElementById(this.cesiumID).style.cursor = "default";
-    //绉婚櫎浜嬩欢
+    //移除事件
     if (this.militaryPlottingGatherHandler) {
       this.militaryPlottingGatherHandler.destroy();
       this.militaryPlottingGatherHandler = null;
     }
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
-    //绉婚櫎鏍囨敞鐐?
+    //关闭鼠标提示
+    this.closeMouseTip();
+    //移除标注点
     for (var i = 0; i < this.militaryPlottingGatherPoints.length; i++) {
       this.viewer.entities.remove(this.militaryPlottingGatherPoints[i]);
     }
     this.militaryPlottingGatherPoints = [];
   },
-  //閲囬泦鍐涗簨鏍囩粯鍖哄煙灞曠ず
+  //采集军事标绘区域展示
   addMilitaryPlotting(cartesianPoints, option, type) {
     let the = this;
     let dynamicHierarchy = null;
@@ -120,14 +120,14 @@ export const militaryPlottingGather = {
   },
 
   /**
-   * 闆嗙粨鍦伴噰闆?
+   * 集结地采集
    * @param {*} callback
    * @param {*} option
    */
   rendezvousGather(callback, option) {
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     let the = this;
-    this.mapToolClass.openMouseTip("鐐瑰嚮2娆″湴鍥惧悗锛屽彸鍑诲嵆鍙畬鎴愰噰闆?);
+    this.openMouseTip("点击2次地图后，右击即可完成采集");
     let cartesianPoints = [];
     let floatingPoint = null;
     let gatherEntity = null;
@@ -182,7 +182,7 @@ export const militaryPlottingGather = {
       floatingPoint.position.setValue(cartesian);
 
       if (gatherEntity) {
-        //鏇挎崲涓棿鐐?
+        //替换中间点
         if (cartesianPoints.length == 3) {
           cartesianPoints[1] = cartesian;
         } else {
@@ -192,13 +192,13 @@ export const militaryPlottingGather = {
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    //鍙冲嚮鍋滄閲囬泦
+    //右击停止采集
     this.militaryPlottingGatherHandler.setInputAction(function (movement) {
       var num = cartesianPoints.length;
       if (num > 2) {
-        //鑾峰彇鐩寸嚎绠ご鍏抽敭鍧愭爣鏁版嵁
+        //获取直线箭头关键坐标数据
         gatherEntity.FFPlotKeyPoints = the.cartesian3ArrToLngLatHeightArr(cartesianPoints);
-        //缁撴潫澶勭悊
+        //结束处理
         the.endMilitaryPlottingGatherDeal();
         the.setAttributeForEntity(gatherEntity, option, "FFRendezvousEntity");
         callback(gatherEntity);
@@ -206,15 +206,15 @@ export const militaryPlottingGather = {
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
   /**
-   * 鍙岀澶撮噰闆?
+   * 双箭头采集
    * @param {*} callback
    * @param {*} option
    */
   doubleArrowGather(callback, option) {
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     let the = this;
-    this.mapToolClass.openMouseTip("鐐瑰嚮5娆″湴鍥惧嵆鍙畬鎴愰噰闆?);
+    this.openMouseTip("点击5次地图即可完成采集");
     let gatherEntity = null;
     let cartesianPoints = [];
     let floatingPoint = null;
@@ -234,7 +234,7 @@ export const militaryPlottingGather = {
       if (!Cesium.defined(cartesian)) {
         return;
       }
-      console.log("鐐瑰嚮鍦板浘閲囬泦鐨勭偣锛?, cartesian);
+      console.log("点击地图采集的点：", cartesian);
       var num = cartesianPoints.length;
       if (num == 0) {
         cartesianPoints.push(cartesian);
@@ -253,9 +253,9 @@ export const militaryPlottingGather = {
       if (cartesianPoints.length > 5) {
         cartesianPoints.pop();
         the.viewer.entities.remove(floatingPoint);
-        //鑾峰彇鐩寸嚎绠ご鍧愭爣鏁版嵁
+        //获取直线箭头坐标数据
         gatherEntity.FFPlotKeyPoints = the.cartesian3ArrToLngLatHeightArr(cartesianPoints);
-        //缁撴潫澶勭悊
+        //结束处理
         the.endMilitaryPlottingGatherDeal();
         the.setAttributeForEntity(gatherEntity, option, "FFDoubleArrowEntity");
         callback(gatherEntity);
@@ -284,13 +284,13 @@ export const militaryPlottingGather = {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
   },
   /**
-   * 鏀诲嚮绠ご閲囬泦
+   * 攻击箭头采集
    * @param {*} callback
    * @param {*} option
    */
   tailedAttackArrowGather(callback, option) {
-    this.mapToolClass.openMouseTip("鐐瑰嚮涓ゆ浠ヤ笂鍦板浘锛屽彸鍑诲畬鎴愰噰闆?);
-    //榧犳爣鍙樻垚鍔犲彿
+    this.openMouseTip("点击两次以上地图，右击完成采集");
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     let the = this;
     let gatherEntity = null;
@@ -312,7 +312,7 @@ export const militaryPlottingGather = {
       if (!Cesium.defined(cartesian)) {
         return;
       }
-      //console.log("鐐瑰嚮鍦板浘閲囬泦鐨勭偣锛?,cartesian);
+      //console.log("点击地图采集的点：",cartesian);
       var num = cartesianPoints.length;
       if (num == 0) {
         cartesianPoints.push(cartesian);
@@ -333,9 +333,9 @@ export const militaryPlottingGather = {
       if (cartesianPoints.length < 2) {
         return;
       }
-      //鑾峰彇鐩寸嚎绠ご鍧愭爣鏁版嵁
+      //获取直线箭头坐标数据
       gatherEntity.FFPlotKeyPoints = the.cartesian3ArrToLngLatHeightArr(cartesianPoints);
-      //缁撴潫澶勭悊
+      //结束处理
       the.endMilitaryPlottingGatherDeal();
       the.setAttributeForEntity(gatherEntity, option, "FFTailedAttackArrowEntity");
       callback(gatherEntity);
@@ -362,11 +362,11 @@ export const militaryPlottingGather = {
       cartesianPoints.push(cartesian);
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
   },
-  //绠ご绾块噰闆?
+  //箭头线采集
   straightArrowGather(callback, option) {
-    this.mapToolClass.openMouseTip("鐐瑰嚮涓€娆″湴鍥撅紝鍙冲嚮瀹屾垚閲囬泦");
+    this.openMouseTip("点击一次地图，右击完成采集");
 
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     let the = this;
     let gatherEntity = null;
@@ -387,7 +387,7 @@ export const militaryPlottingGather = {
       if (!Cesium.defined(cartesian)) {
         return;
       }
-      //console.log("鐐瑰嚮鍦板浘閲囬泦鐨勭偣锛?,cartesian);
+      //console.log("点击地图采集的点：",cartesian);
       var num = cartesianPoints.length;
       if (num == 0) {
         cartesianPoints.push(cartesian);
@@ -416,9 +416,9 @@ export const militaryPlottingGather = {
       console.log("num111", num);
       if (num > 1) {
         cartesianPoints.pop();
-        //鑾峰彇鐩寸嚎绠ご鍏抽敭鍧愭爣鏁版嵁
+        //获取直线箭头关键坐标数据
         gatherEntity.FFPlotKeyPoints = the.cartesian3ArrToLngLatHeightArr(cartesianPoints);
-        //缁撴潫澶勭悊
+        //结束处理
         the.endMilitaryPlottingGatherDeal();
         the.setAttributeForEntity(gatherEntity, option, "FFStraightArrowEntity");
         callback(gatherEntity);
@@ -447,7 +447,7 @@ export const militaryPlottingGather = {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
   },
   /**
-   * 姹傞泦缁撳湴鎻掑€煎潗鏍?
+   * 求集结地插值坐标
    * @returns
    */
   fineGatheringPlace(cartesianPoints) {
@@ -497,4 +497,3 @@ export const militaryPlottingGather = {
     }
   }
 };
-

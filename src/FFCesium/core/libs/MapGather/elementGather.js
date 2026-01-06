@@ -2,9 +2,9 @@
 import { createGatherPoint } from "./common.js";
 
 export const elementGather = {
-  //涓€娆″彧鑳界敱涓€涓噰闆嗕簨浠?gatherHandler
+  //一次只能由一个采集事件,gatherHandler
   gatherHandler: null,
-  //杩涘叆閲囬泦鍒颁竴鍗婏紝寮哄埗鍏抽棴閲囬泦
+  //进入采集到一半，强制关闭采集
   forceGatherEnd() {
     console.log("this.gatherHandler", this.gatherHandler);
     if (this.gatherHandler) {
@@ -17,80 +17,80 @@ export const elementGather = {
     }
     this.gatherHandlerDestroy();
   },
-  //濡傛灉瀛樺湪gatherHandler锛屽垯鍏堥攢姣?
+  //如果存在gatherHandler，则先销毁
   gatherHandlerDestroy() {
     if (this.gatherHandler) {
       this.gatherHandler.destroy();
       this.gatherHandler = null;
     }
-    //鍏抽棴榧犳爣鎻愮ず
-    this.mapToolClass.closeMouseTip();
-    //榧犳爣鍙樻垚鍔犲彿
+    //关闭鼠标提示
+    this.closeMouseTip();
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "default";
     this.viewer.scene.screenSpaceCameraController.enableRotate = true;
     this.viewer.scene.screenSpaceCameraController.enableZoom = true;
   },
-  //鍦嗗舰閲囬泦
+  //圆形采集
   circleGather(callback, option) {
-    this.mapToolClass.openMouseTip("鐐瑰嚮閲囬泦鍚庢嫋鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("点击采集后拖动，右击即可完成采集");
     let the = this;
     let viewer = this.viewer;
     let gatherCircleEntity = null;
     let centerPoint = null;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
-    //杩涘埗鍦板浘绉诲姩
+    //进制地图移动
     viewer.scene.screenSpaceCameraController.enableRotate = false;
     viewer.scene.screenSpaceCameraController.enableZoom = false;
     this.gatherHandler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-    //榧犳爣鐐瑰嚮浜嬩欢
+    //鼠标点击事件
     this.gatherHandler.setInputAction((event) => {
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = viewer.camera.getPickRay(event.position);
       var cartesian = viewer.scene.globe.pick(ray, viewer.scene);
       if (!Cesium.defined(cartesian)) {
         return;
       }
       centerPoint = createGatherPoint(cartesian, viewer);
-      //榛樿鐢熸垚鍗婂緞涓?.1绫崇殑鍦嗐€?
+      //默认生成半径为0.1米的圆。
       gatherCircleEntity = viewer.entities.add({
         position: cartesian,
         ellipse: {
-          semiMinorAxis: 0.1, //妞渾鐭酱锛堝崟浣嶇背锛?
-          semiMajorAxis: 0.1, //妞渾闀胯酱锛堝崟浣嶇背锛?
+          semiMinorAxis: 0.1, //椭圆短轴（单位米）
+          semiMajorAxis: 0.1, //椭圆长轴（单位米）
           material: Cesium.Color.GREENYELLOW.withAlpha(0.5),
           outline: true,
           outlineColor: Cesium.Color.WHITE,
           outlineWidth: 3
         }
       });
-      //渚沠orceGatherEnd浣跨敤锛岄噰闆嗗埌涓€鍗婂己鍒跺叧闂噰闆?
+      //供forceGatherEnd使用，采集到一半强制关闭采集
       this.gatherHandler.GatherEntity = [];
       this.gatherHandler.GatherEntity.push(centerPoint);
       this.gatherHandler.GatherEntity.push(gatherCircleEntity);
       this.gatherHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     this.gatherHandler.setInputAction((event) => {
       if (centerPoint == null || gatherCircleEntity == null) {
         return;
       }
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = viewer.camera.getPickRay(event.endPosition);
       var radiusCartesian = viewer.scene.globe.pick(ray, viewer.scene);
       if (!radiusCartesian) {
         return;
       }
       var centerCartesian = centerPoint.position.getValue(Cesium.JulianDate.now());
-      //璁＄畻绉诲姩鐐逛笌涓績鐐圭殑璺濈锛堝崟浣嶇背锛?
+      //计算移动点与中心点的距离（单位米）
       var centerTemp = viewer.scene.globe.ellipsoid.cartesianToCartographic(centerCartesian);
       var radiusTemp = viewer.scene.globe.ellipsoid.cartesianToCartographic(radiusCartesian);
       var geodesic = new Cesium.EllipsoidGeodesic();
       geodesic.setEndPoints(centerTemp, radiusTemp);
       var radius = geodesic.surfaceDistance;
       //console.log("radius",radius);
-      //濡傛灉鍗婂緞灏忎簬0,鍒欎笉鏇存柊鍦嗕俊鎭?
+      //如果半径小于0,则不更新圆信息
       if (radius <= 0) {
         return;
       }
@@ -102,44 +102,44 @@ export const elementGather = {
       }, false);
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉(缁撴潫鐐归噰闆?
+    // 对鼠标抬起事件的监听(结束点采集)
     this.gatherHandler.setInputAction((event) => {
-      //榧犳爣鍙樻垚榛樿
+      //鼠标变成默认
       document.getElementById(this.cesiumID).style.cursor = "default";
-      //寮€濮嬮紶鏍囨搷浣滃湴鍥?
+      //开始鼠标操作地图
       viewer.scene.screenSpaceCameraController.enableRotate = true;
       viewer.scene.screenSpaceCameraController.enableZoom = true;
-      //绉婚櫎浜嬩欢
+      //移除事件
       the.gatherHandlerDestroy();
-      //濡傛灉鍦嗗崐寰勫皬浜?.5绫冲垯鍒犻櫎锛岄槻姝㈠嚭鐜伴粯璁や负0.1绫崇殑琚噰闆嗐€傝绉嶆儏鍐靛垯鏄敤鎴峰彇娑堝渾閲囬泦
+      //如果圆半径小于0.5米则删除，防止出现默认为0.1米的被采集。该种情况则是用户取消圆采集
       //if (gatherCircleEntity.ellipse.semiMinorAxis.getValue() < 0.5) {
       // viewer.entities.remove(gatherCircleEntity);
       // gatherCircleEntity = null;
       // return;
       //}
-      //娓呴櫎鍦嗕腑蹇冪偣鍜屽崐寰勭偣
+      //清除圆中心点和半径点
       viewer.entities.remove(centerPoint);
       centerPoint = null;
       the.setAttributeForEntity(gatherCircleEntity, option, "circle");
       callback(gatherCircleEntity);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
-  //鐭╁舰閲囬泦
+  //矩形采集
   rectangleGather(callback, option) {
     let the = this;
-    this.mapToolClass.openMouseTip("鐐瑰嚮閲囬泦鍚庢嫋鍔紝鍙冲嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("点击采集后拖动，右击即可完成采集");
     let gatherRectangleEntity = null;
     let startPoint = null;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
-    //杩涘埗鍦板浘绉诲姩
+    //进制地图移动
     this.viewer.scene.screenSpaceCameraController.enableRotate = false;
     this.viewer.scene.screenSpaceCameraController.enableZoom = false;
     this.gatherHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
-    //榧犳爣鐐瑰嚮浜嬩欢
+    //鼠标点击事件
     this.gatherHandler.setInputAction((event) => {
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = the.viewer.camera.getPickRay(event.position);
       var cartesian = the.viewer.scene.globe.pick(ray, the.viewer.scene);
       if (!Cesium.defined(cartesian)) {
@@ -154,17 +154,17 @@ export const elementGather = {
       });
       this.gatherHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
-      //渚沠orceGatherEnd浣跨敤锛岄噰闆嗗埌涓€鍗婂己鍒跺叧闂噰闆?
+      //供forceGatherEnd使用，采集到一半强制关闭采集
       this.gatherHandler.GatherEntity = [];
       this.gatherHandler.GatherEntity.push(startPoint);
       this.gatherHandler.GatherEntity.push(gatherRectangleEntity);
     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-    // 瀵归紶鏍囩Щ鍔ㄤ簨浠剁殑鐩戝惉
+    // 对鼠标移动事件的监听
     this.gatherHandler.setInputAction((event) => {
       if (startPoint == null || gatherRectangleEntity == null) {
         return;
       }
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = the.viewer.camera.getPickRay(event.endPosition);
       var cartesian = the.viewer.scene.globe.pick(ray, the.viewer.scene);
       if (!cartesian) {
@@ -176,31 +176,31 @@ export const elementGather = {
       }, false);
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    // 瀵归紶鏍囨姮璧蜂簨浠剁殑鐩戝惉(缁撴潫鐐归噰闆?
+    // 对鼠标抬起事件的监听(结束点采集)
     this.gatherHandler.setInputAction((event) => {
-      //榧犳爣鍙樻垚榛樿
+      //鼠标变成默认
       document.getElementById(this.cesiumID).style.cursor = "default";
       the.viewer.scene.screenSpaceCameraController.enableRotate = true;
       the.viewer.scene.screenSpaceCameraController.enableZoom = true;
       the.viewer.entities.remove(startPoint);
-      //绉婚櫎浜嬩欢
+      //移除事件
       the.gatherHandlerDestroy();
       the.setAttributeForEntity(gatherRectangleEntity, option, "rectangle");
       callback(gatherRectangleEntity);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     //Cesium.ScreenSpaceEventType.LEFT_UP
   },
-  //鍥炬爣鐐归噰闆?
+  //图标点采集
   billboardGather(callback, option) {
     let the = this;
-    this.mapToolClass.openMouseTip("鐐瑰嚮鍗冲彲瀹屾垚閲囬泦");
+    this.openMouseTip("点击即可完成采集");
     let gatherPointEntity = null;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     this.gatherHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.canvas);
-    // 瀵归紶鏍囨寜涓嬩簨浠剁殑鐩戝惉
+    // 对鼠标按下事件的监听
     this.gatherHandler.setInputAction(function (event) {
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = the.viewer.camera.getPickRay(event.position);
       var cartesian = the.viewer.scene.globe.pick(ray, the.viewer.scene);
       if (!Cesium.defined(cartesian)) {
@@ -209,25 +209,25 @@ export const elementGather = {
 
       let lngLatHeightTemp = the.cartesian3ToLngLat(cartesian);
       gatherPointEntity = the.addBillboardEntity([lngLatHeightTemp.lng, lngLatHeightTemp.lat, lngLatHeightTemp.height], option);
-      //榧犳爣鍙樻垚榛樿
+      //鼠标变成默认
       document.getElementById(the.cesiumID).style.cursor = "default";
-      //绉婚櫎浜嬩欢
+      //移除事件
       the.gatherHandlerDestroy();
       callback(gatherPointEntity);
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
   },
-  //鐐归噰闆?
+  //点采集
   pointGather(callback, option) {
     let the = this;
-    //绉婚櫎浜嬩欢
-    this.mapToolClass.openMouseTip("鐐瑰嚮鍗冲彲瀹屾垚閲囬泦");
+    //移除事件
+    this.openMouseTip("点击即可完成采集");
     let gatherPointEntity = null;
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     this.gatherHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.canvas);
-    // 瀵归紶鏍囨寜涓嬩簨浠剁殑鐩戝惉
+    // 对鼠标按下事件的监听
     this.gatherHandler.setInputAction(function (event) {
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = the.viewer.camera.getPickRay(event.position);
       var cartesian = the.viewer.scene.globe.pick(ray, the.viewer.scene);
       if (!Cesium.defined(cartesian)) {
@@ -235,30 +235,30 @@ export const elementGather = {
       }
       let lngLatHeightTemp = the.cartesian3ToLngLat(cartesian);
       gatherPointEntity = the.addPointEntity([lngLatHeightTemp.lng, lngLatHeightTemp.lat, lngLatHeightTemp.height], option);
-      //榧犳爣鍙樻垚榛樿
+      //鼠标变成默认
       document.getElementById(the.cesiumID).style.cursor = "default";
-      //绉婚櫎浜嬩欢
+      //移除事件
       the.gatherHandlerDestroy();
-      //璁剧疆灞炴€?
+      //设置属性
       the.setAttributeForEntity(gatherPointEntity, option, "point");
       callback(gatherPointEntity);
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
   },
-  //绾块噰闆?
+  //线采集
   polylineGather(callback, option) {
     let the = this;
-    this.mapToolClass.openMouseTip("涓嶆柇鐐瑰嚮閲囬泦锛屽彸鍑诲嵆鍙畬鎴愰噰闆?);
+    this.openMouseTip("不断点击采集，右击即可完成采集");
     let gatherPolylineEntity = null;
     let entityPoints = [];
     let cartesianPoints = [];
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     this.gatherHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.canvas);
-    //渚沠orceGatherEnd浣跨敤锛岄噰闆嗗埌涓€鍗婂己鍒跺叧闂噰闆?
+    //供forceGatherEnd使用，采集到一半强制关闭采集
     the.gatherHandler.GatherEntity = [];
-    // 瀵归紶鏍囨寜涓嬩簨浠剁殑鐩戝惉
+    // 对鼠标按下事件的监听
     this.gatherHandler.setInputAction(function (event) {
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = the.viewer.camera.getPickRay(event.position);
       var cartesian = the.viewer.scene.globe.pick(ray, the.viewer.scene);
       if (!Cesium.defined(cartesian)) {
@@ -281,40 +281,40 @@ export const elementGather = {
           });
           the.gatherHandler.GatherEntity.push(gatherPolylineEntity);
         } else {
-          //CallbackProperty鐩戝惉point鍙樺寲鍊间細鑷姩set
+          //CallbackProperty监听point变化值会自动set
         }
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     this.gatherHandler.setInputAction(function (rightClick) {
-      //绉婚櫎鍦板浘鐐?
+      //移除地图点
       for (var i = 0; i < entityPoints.length; i++) {
         the.viewer.entities.remove(entityPoints[i]);
       }
       entityPoints = [];
-      //榧犳爣鍙樻垚鍔犲彿
+      //鼠标变成加号
       document.getElementById(the.cesiumID).style.cursor = "default";
-      //绉婚櫎浜嬩欢
+      //移除事件
       the.gatherHandlerDestroy();
-      //璁剧疆灞炴€?
+      //设置属性
       the.setAttributeForEntity(gatherPolylineEntity, option, "polyline");
 
       callback(gatherPolylineEntity);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   },
-  //闈㈤噰闆?
+  //面采集
   polygonGather(callback, option) {
     let the = this;
-    this.mapToolClass.openMouseTip("涓嶆柇鐐瑰嚮閲囬泦锛屽彸鍑诲嵆鍙畬鎴愰噰闆?);
+    this.openMouseTip("不断点击采集，右击即可完成采集");
     let gatherPolygonEntity = null;
     let entityPoints = [];
     let cartesianPoints = [];
-    //榧犳爣鍙樻垚鍔犲彿
+    //鼠标变成加号
     document.getElementById(this.cesiumID).style.cursor = "crosshair";
     this.gatherHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.canvas);
-    // 瀵归紶鏍囨寜涓嬩簨浠剁殑鐩戝惉
+    // 对鼠标按下事件的监听
     this.gatherHandler.setInputAction(function (event) {
-      //鑾峰彇鍔犺浇鍦板舰鍚庡搴旂殑缁忕含搴﹀拰楂樼▼锛氬湴鏍囧潗鏍?
+      //获取加载地形后对应的经纬度和高程：地标坐标
       var ray = the.viewer.camera.getPickRay(event.position);
       var cartesian = the.viewer.scene.globe.pick(ray, the.viewer.scene);
       if (!Cesium.defined(cartesian)) {
@@ -324,7 +324,7 @@ export const elementGather = {
       entityPoints.push(point);
       cartesianPoints.push(cartesian);
 
-      //渚沠orceGatherEnd浣跨敤锛岄噰闆嗗埌涓€鍗婂己鍒跺叧闂噰闆?
+      //供forceGatherEnd使用，采集到一半强制关闭采集
       the.gatherHandler.GatherEntity = [];
       the.gatherHandler.GatherEntity.push(point);
 
@@ -340,7 +340,7 @@ export const elementGather = {
               ...option
             }
           });
-          //渚沠orceGatherEnd浣跨敤锛岄噰闆嗗埌涓€鍗婂己鍒跺叧闂噰闆?
+          //供forceGatherEnd使用，采集到一半强制关闭采集
           the.gatherHandler.GatherEntity.push(gatherPolygonEntity);
         } else {
           gatherPolygonEntity.polygon.hierarchy = new Cesium.CallbackProperty(function (time, result) {
@@ -352,18 +352,17 @@ export const elementGather = {
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     this.gatherHandler.setInputAction(function (rightClick) {
-      //绉婚櫎闈㈤噰闆嗙偣
+      //移除面采集点
       for (var i = 0; i < entityPoints.length; i++) {
         the.viewer.entities.remove(entityPoints[i]);
       }
       entityPoints = [];
-      //榧犳爣鍙樻垚鍔犲彿
+      //鼠标变成加号
       document.getElementById(the.cesiumID).style.cursor = "default";
-      //绉婚櫎浜嬩欢
+      //移除事件
       the.gatherHandlerDestroy();
       the.setAttributeForEntity(gatherPolygonEntity, option, "polygon");
       callback(gatherPolygonEntity);
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
   }
 };
-
