@@ -1,10 +1,7 @@
 <template>
-  <div
-    id="cesiumContainer"
-    style="
+  <div id="cesiumContainer" style="
       background-image: url(./FFCesiumExample/AdvancedExamples/addType/images/back.png);
-    "
-  ></div>
+    "></div>
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, nextTick } from "vue";
@@ -51,7 +48,7 @@ onMounted(() => {
     latlngArr.push(item[0]);
     latlngArr.push(item[1]);
   });
-  ffCesium.showMapByAreaLngLat(latlngArr);
+  ffCesium.addTypeClass.showMapByAreaLngLat(latlngArr);
 });
 </script>
 <style scoped>

@@ -1,53 +1,34 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addHtmlFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addHtmlFun">
       叠加气泡框（div）
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="changeValue"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="changeValue">
       测试更新气泡框的值（更改<将军山水厂>为<中山水厂>）
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 200px; z-index: 999"
-      @click="closeDivCollisionCheckingFun"
-    >
+    <button style="position: absolute; left: 100px; top: 200px; z-index: 999" @click="closeDivCollisionCheckingFun">
       关闭碰撞检测
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 250px; z-index: 999"
-      @click="removeHtmlFun"
-    >
+    <button style="position: absolute; left: 100px; top: 250px; z-index: 999" @click="removeHtmlFun">
       移除气泡框（div）
     </button>
 
-    <div
-      v-for="(item, key) in peopleArr"
-      :id="item.id"
-      style="
+    <div v-for="(item, key) in peopleArr" :id="item.id" style="
         display: none;
         z-index: 999;
         background: white;
         width: 258px;
         height: 70px;
-      "
-    >
+      ">
       <div class="hh-popu-card-wrapper">
         <div class="hh-popu-card-header">
           <div class="vertical-line"></div>
           <div class="hh-popu-dialog-name">{{ item.name }}</div>
         </div>
-        <div
-          class="hh-popu-dialog-content"
-          style="display: flex; flex-direction: row"
-        >
+        <div class="hh-popu-dialog-content" style="display: flex; flex-direction: row">
           <div class="first column">
             <span class="tab-title" style="padding-left: 5px">{{
               item.name
@@ -113,18 +94,18 @@ const addHtmlFun = () => {
     let htmlOverlay = document.getElementById(element.id);
     htmlOverlay.lngLatHeight = lngLatHeight;
     //htmlOverlay.name = element.name;
-    ffCesium.addHtmlForVue(lngLatHeight, htmlOverlay, offset);
+    ffCesium.addTypeClass.addHtmlForVue(lngLatHeight, htmlOverlay, offset);
     allHtmlOverlay.push(htmlOverlay);
   });
 
   let option = {
     opacity: 0.1,
   };
-  ffCesium.openDivCollisionChecking(allHtmlOverlay, option);
+  ffCesium.addTypeClass.openDivCollisionChecking(allHtmlOverlay, option);
 };
 
 const closeDivCollisionCheckingFun = () => {
-  ffCesium.closeDivCollisionChecking();
+  ffCesium.addTypeClass.closeDivCollisionChecking();
 };
 
 const changeValue = () => {
@@ -161,15 +142,14 @@ const removeHtmlFun = () => {
   line-height: 30px;
   justify-content: space-between;
   align-items: center;
-  background-image: linear-gradient(
-    90deg,
-    #072c28 47%,
-    rgba(7, 44, 40, 0.82) 67%,
-    rgba(7, 44, 40, 0.6) 82%,
-    rgba(7, 44, 40, 0.42) 93%,
-    rgba(7, 44, 40, 0) 100%
-  );
+  background-image: linear-gradient(90deg,
+      #072c28 47%,
+      rgba(7, 44, 40, 0.82) 67%,
+      rgba(7, 44, 40, 0.6) 82%,
+      rgba(7, 44, 40, 0.42) 93%,
+      rgba(7, 44, 40, 0) 100%);
 }
+
 .hh-popu-dialog-name {
   padding-left: 10px;
   font-family: SourceHanSansSC-Bold;
@@ -192,6 +172,7 @@ const removeHtmlFun = () => {
   justify-content: space-around;
   justify-content: space-between;
 }
+
 .tab-title {
   font-family: SourceHanSansSC-Regular;
   font-size: 14px;
@@ -201,6 +182,7 @@ const removeHtmlFun = () => {
   height: 20px;
   overflow: hidden;
 }
+
 .vertical-line {
   position: absolute;
   left: 0;

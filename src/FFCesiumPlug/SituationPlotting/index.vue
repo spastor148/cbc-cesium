@@ -5,39 +5,12 @@
       <div style="padding-left: 15px; padding-right: 15px">
         <el-divider content-position="left">绘制区</el-divider>
       </div>
-      <div
-        style="padding-left: 15px; padding-right: 15px; padding-bottom: 10px"
-      >
-        <el-button
-          type="primary"
-          style="margin-top: 10px"
-          @click="gatherBillboard"
-          >点</el-button
-        >
-        <el-button
-          type="primary"
-          style="margin-top: 10px"
-          @click="gatherPolyline"
-          >线</el-button
-        >
-        <el-button
-          type="primary"
-          style="margin-top: 10px"
-          @click="gatherPolygon"
-          >面</el-button
-        >
-        <el-button
-          type="primary"
-          style="margin-top: 10px"
-          @click="gatherRectangle"
-          >矩形</el-button
-        >
-        <el-button
-          type="primary"
-          style="margin-top: 10px"
-          @click="circleGatherFun"
-          >圆</el-button
-        >
+      <div style="padding-left: 15px; padding-right: 15px; padding-bottom: 10px">
+        <el-button type="primary" style="margin-top: 10px" @click="gatherBillboard">点</el-button>
+        <el-button type="primary" style="margin-top: 10px" @click="gatherPolyline">线</el-button>
+        <el-button type="primary" style="margin-top: 10px" @click="gatherPolygon">面</el-button>
+        <el-button type="primary" style="margin-top: 10px" @click="gatherRectangle">矩形</el-button>
+        <el-button type="primary" style="margin-top: 10px" @click="circleGatherFun">圆</el-button>
       </div>
     </div>
 
@@ -46,39 +19,23 @@
       <div style="padding-left: 15px; padding-right: 15px">
         <el-divider content-position="left">编辑区</el-divider>
       </div>
-      <span style="color: red; font-size: 12px; padding-left: 15px"
-        >* 地图右击也可保存</span
-      >
+      <span style="color: red; font-size: 12px; padding-left: 15px">* 地图右击也可保存</span>
 
-      <el-form
-        :model="form"
-        label-width="auto"
-        style="max-width: 600px; padding: 10px"
-      >
+      <el-form :model="form" label-width="auto" style="max-width: 600px; padding: 10px">
         <el-form-item label="名称">
           <el-input v-model="form.text" />
         </el-form-item>
 
         <el-form-item label="图标" v-if="form.imageType">
           <div class="iconList">
-            <img
-              v-for="item in iconList"
-              :key="item.key"
-              @click="setIcon(item)"
-              :src="item.value"
-              :style="setIconClass(item)"
-            />
+            <img v-for="item in iconList" :key="item.key" @click="setIcon(item)" :src="item.value"
+              :style="setIconClass(item)" />
             <div class="checkmark"></div>
           </div>
         </el-form-item>
 
         <el-form-item label="颜色" v-if="form.color">
-          <el-color-picker
-            v-model="form.color"
-            show-alpha
-            :predefine="predefineColors"
-            color-format="hex"
-          />
+          <el-color-picker v-model="form.color" show-alpha :predefine="predefineColors" color-format="hex" />
         </el-form-item>
         <el-form-item label="面积" v-if="form.area">
           <el-input v-model="form.area" :disabled="true">
@@ -91,23 +48,18 @@
           </el-input>
         </el-form-item>
 
-        <el-button type="primary" style="margin-left: 70px" @click="save"
-          >保存</el-button
-        >
+        <el-button type="primary" style="margin-left: 70px" @click="save">保存</el-button>
       </el-form>
     </div>
     <!--菜单栏-->
     <Teleport to="#cesiumContainer">
-      <div
-        id="plotMenuID"
-        style="
+      <div id="plotMenuID" style="
           background-color: white;
           display: none;
           z-index: 999;
           height: 90px;
           width: 80px;
-        "
-      >
+        ">
         <div class="hover-div" @click="editCurrentEntity">编辑</div>
         <div class="hover-div" @click="deleteCurrentEntity">删除</div>
         <div class="hover-div" @click="closeplotMenuHtmlOverlay">关闭</div>
@@ -221,7 +173,7 @@ let menuHandler = null;
 //关闭弹窗
 const closeplotMenuHtmlOverlay = () => {
   console.log("closeplotMenuHtmlOverlay");
-  ffCesium.closeHtmlForVue(plotMenuHtmlOverlay);
+  ffCesium.addTypeClass.closeHtmlForVue(plotMenuHtmlOverlay);
 };
 //修改标绘实体
 const editCurrentEntity = () => {
@@ -471,9 +423,9 @@ const addMenuHandler = () => {
       let offset = { top: -90, left: -40 };
       let lngLatHeight = ffCesium.positionToLngLatHeight(cartesian);
       plotMenuHtmlOverlay.lngLatHeight = lngLatHeight;
-      ffCesium.addHtmlForVue(lngLatHeight, plotMenuHtmlOverlay, offset);
+      ffCesium.addTypeClass.addHtmlForVue(lngLatHeight, plotMenuHtmlOverlay, offset);
     } else {
-      ffCesium.closeHtmlForVue(plotMenuHtmlOverlay);
+      ffCesium.addTypeClass.closeHtmlForVue(plotMenuHtmlOverlay);
     }
   }, ffCesium.Cesium.ScreenSpaceEventType.LEFT_DOWN);
 };
@@ -635,14 +587,18 @@ const circleGatherFunCallback = (gatherCircle) => {
 </script>
 <style scoped>
 .hover-div {
-  transition: background-color 0.3s; /* 平滑过渡效果 */
+  transition: background-color 0.3s;
+  /* 平滑过渡效果 */
   text-align: center;
   line-height: 30px;
 }
+
 .hover-div:hover {
   cursor: pointer;
-  background-color: #3498db; /* 悬浮时的背景色 */
+  background-color: #3498db;
+  /* 悬浮时的背景色 */
 }
+
 .el-divider--horizontal {
   border-top: 1px var(--el-border-color) var(--el-border-style);
   display: block;

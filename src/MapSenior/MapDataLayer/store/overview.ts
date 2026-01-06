@@ -215,7 +215,7 @@ export const OverviewStore = defineStore("overviewID", {
               htmlOverlay.lngLatHeight = lngLatHeight;
               htmlOverlay.layerID = element.id;
               htmlOverlay.type = type;
-              this.ffCesium.addHtmlForVue(lngLatHeight, htmlOverlay, offset);
+              this.ffCesium.addTypeClass.addHtmlForVue(lngLatHeight, htmlOverlay, offset);
               this.overviewDataLayer[type].push(htmlOverlay);
             }
           });
