@@ -1,5 +1,5 @@
 import * as Cesium from "cesium";
-import { createGatherPoint } from "./common.js";
+import { createGatherPoint } from "./LogicClass/common.js";
 import { xp } from "../../dependentLib/plotHelper/algorithm.js";
 import { P } from "../../dependentLib/plotHelper/plotUtil.js";
 import MilitaryPlottingGatherLogic from "./LogicClass/MilitaryPlottingGatherLogic.js";

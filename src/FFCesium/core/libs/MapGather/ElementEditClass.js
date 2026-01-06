@@ -1,5 +1,5 @@
 import * as Cesium from "cesium";
-import { createGatherPoint, createHalfGatherPoint } from "./common.js";
+import { createGatherPoint, createHalfGatherPoint } from "./LogicClass/common.js";
 import ElementEditLogic from "./LogicClass/ElementEditLogic.js";
 import { mapUtil } from "../mapUtil.js";
 
