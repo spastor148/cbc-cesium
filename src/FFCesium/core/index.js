@@ -1,22 +1,20 @@
 import * as Cesium from "cesium";
-
+//地图效果
 import ParticleEffectClass from "./libs/MapEffect/ParticleEffectClass.js";//粒子效果类
 import WeatherEffectClass from "./libs/MapEffect/WeatherEffectClass.js";//天气效果类
 import PolygonEffectClass from "./libs/MapEffect/PolygonEffectClass.js";//面效果类
 import PolylineEffectClass from "./libs/MapEffect/PolylineEffectClass.js";//线效果类
 
 //地图接入
-// import { mapServer } from "./libs/MapAccess/mapServer.js";
-// import { dataServer } from "./libs/MapAccess/dataServer.js";
 import MapServerClass from "./libs/MapAccess/MapServerClass.js";
 import DataServerClass from "./libs/MapAccess/DataServerClass.js";
 
 //地图基础操作
-import { mapTool } from "./libs/MapOperate/mapTool.js";
-import { addPrimitive } from "./libs/MapOperate/addPrimitive.js";
-import { addEntity } from "./libs/MapOperate/addEntity.js";
-import { mapAction } from "./libs/MapOperate/mapAction.js";
-import { addOtherElement } from "./libs/MapOperate/addOtherElement.js";
+import MapToolClass from "./libs/MapOperate/MapToolClass.js";
+import PrimitiveClass from "./libs/MapOperate/PrimitiveClass.js";
+import EntityClass from "./libs/MapOperate/EntityClass.js";
+import MapActionClass from "./libs/MapOperate/MapActionClass.js";
+import ElementClass from "./libs/MapOperate/ElementClass.js";
 //地图采集
 import { elementGather } from "./libs/MapGather/elementGather.js";
 import { elementEdit } from "./libs/MapGather/elementEdit.js";
@@ -49,6 +47,11 @@ class FFCesium {
   addTypeClass;//高级示例--AddType类
   mapServerClass;
   dataServerClass;
+  mapToolClass;
+  primitiveClass;
+  entityClass;
+  mapActionClass;
+  elementClass;
   cesiumID;
   viewer;
   Cesium;
@@ -60,15 +63,6 @@ class FFCesium {
     //合并其他文件JS文件方法1231
     let time1 = new Date().getTime();
     Object.assign(FFCesium.prototype, {
-      //地图接入
-      // ...mapServer,
-      // ...dataServer,
-      //地图操作
-      ...mapTool,
-      ...addPrimitive,
-      ...addEntity,
-      ...mapAction,
-      ...addOtherElement,
       //地图元素采集
       ...elementGather,
       //地图元素修改
@@ -108,7 +102,7 @@ class FFCesium {
     this.flyRoam = new FlyRoam(this);
     this.flyRoamNew = new FlyRoamNew(this);
 
-    this.addPrimitiveInit();
+    // this.addPrimitiveInit();
     console.log("FFCesium构建总耗时（ms）", time3 - time1);
 
     /**
@@ -123,6 +117,13 @@ class FFCesium {
     // 初始化服务类
     this.mapServerClass = new MapServerClass(this.viewer);
     this.dataServerClass = new DataServerClass(this.viewer);
+
+    // 初始化地图操作类
+    this.mapToolClass = new MapToolClass(this.viewer, this.cesiumID);
+    this.primitiveClass = new PrimitiveClass(this.viewer);
+    this.entityClass = new EntityClass(this.viewer);
+    this.mapActionClass = new MapActionClass(this.viewer);
+    this.elementClass = new ElementClass(this.viewer, this.cesiumID);
   }
   defaultMap() {
     let viewerOption = {
