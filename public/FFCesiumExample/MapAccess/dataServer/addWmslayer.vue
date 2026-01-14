@@ -1,16 +1,10 @@
 <template>
   <div id="cesiumContainer">
-    <button
-      style="position: absolute; left: 100px; top: 100px; z-index: 999"
-      @click="addWmslayerFun"
-    >
+    <button style="position: absolute; left: 100px; top: 100px; z-index: 999" @click="addWmslayerFun">
       叠加土地资源(wms服务)
     </button>
 
-    <button
-      style="position: absolute; left: 100px; top: 150px; z-index: 999"
-      @click="removeWmslayerFun"
-    >
+    <button style="position: absolute; left: 100px; top: 150px; z-index: 999" @click="removeWmslayerFun">
       移除土地资源(wms服务)
     </button>
   </div>
@@ -38,7 +32,7 @@ onMounted(() => {
   }; //初始化
   ffCesium = new FFCesium("cesiumContainer", viewerOption);
   let mapLayer = ffCesium.mapServerClass.addTdtImgLayer();
-  ffCesium.setView({
+  ffCesium.mapActionClass.setView({
     lng: 118.135,
     lat: 24.339,
     height: 20000,

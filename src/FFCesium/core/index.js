@@ -22,15 +22,12 @@ import ElementEditClass from "./libs/MapGather/ElementEditClass.js";
 import MilitaryPlottingGatherClass from "./libs/MapGather/MilitaryPlottingGatherClass.js";
 import MilitaryPlottingEditClass from "./libs/MapGather/MilitaryPlottingEditClass.js";
 
-
-
 //空间分析
 import SpatialAnalysisClass from "./libs/SpatialAnalysis/SpatialAnalysisClass.js";
 //高级示例
 import AddTypeClass from "./libs/AdvancedExamples/AddTypeClass.js";
 //地图通用工具包
 import MapUtilClass from "./libs/MapUtil/MapUtilClass.js";
-//其他
 
 //高级示例
 import RotateTool from "../senior/libs/rotateTool/index.js";
@@ -65,6 +62,7 @@ class FFCesium {
   flyRoam;
   flyRoamNew;
   constructor(id, option) {
+
     this.Cesium = Cesium;
     //合并其他文件JS文件方法1231
     let time1 = new Date().getTime();
@@ -87,9 +85,6 @@ class FFCesium {
     }
     this.viewer._cesiumWidget._creditContainer.style.display = "none"; //去除版权信息
     let time3 = new Date().getTime();
-
-
-
 
     // this.addPrimitiveInit();
     console.log("FFCesium构建总耗时（ms）", time3 - time1);
