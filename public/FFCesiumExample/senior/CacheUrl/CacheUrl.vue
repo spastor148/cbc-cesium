@@ -7,7 +7,7 @@ import { onMounted } from "vue";
 import FFCesium from "FFCesium";
 
 let ffCesium = null;
-onMounted(() => {
+onMounted(async () => {
   let viewerOption = {
     animation: false, //是否创建动画小器件，左下角仪表
     baseLayerPicker: false, //是否显示图层选择器
@@ -45,12 +45,13 @@ onMounted(() => {
     }
   }; //初始化
   ffCesium = new FFCesium("cesiumContainer", viewerOption);
-  console.log("11111");
-  //ffCesium.mapActionClass.setView({ lng: 118.1022, lat: 24.4959, height: 100000, pitchRadiu: -90 });
+  // wait until FFCesium completes initialization (including cache open)
+  await ffCesium.whenReady();
+  console.log("FFCesium ready");
+  ffCesium.mapActionClass.setView({ lng: 118.1022, lat: 24.4959, height: 100000, pitchRadiu: -90 });
 
-  let url =
-    "https://webst04.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}";
-  //ffCesium.mapServerClass.addCustomLayer(url);
+  let url = "https://webst04.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}";
+  ffCesium.mapServerClass.addCustomLayer(url);
 });
 
 </script>

@@ -67,6 +67,11 @@ class FFCesium {
   flyRoamNew;
   constructor(id, option) {
     // Synchronous constructor: start async cache init without awaiting
+    // readiness promise so callers can wait for full initialization
+    this._ready = new Promise((resolve) => {
+      this._resolveReady = resolve
+    })
+
     if (option?.customOption?.cacheUrl) {
       this.openCache(id, option)
     } else {
@@ -145,6 +150,17 @@ class FFCesium {
     this.rotateTool = new RotateTool(this);
     this.flyRoam = new FlyRoam(this);
     this.flyRoamNew = new FlyRoamNew(this);
+    // mark ready
+    try {
+      this._resolveReady && this._resolveReady(this)
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  // return a promise that resolves when initialization completes
+  whenReady() {
+    return this._ready
   }
 
   defaultMap() {

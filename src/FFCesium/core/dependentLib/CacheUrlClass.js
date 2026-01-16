@@ -3,8 +3,8 @@ import * as Cesium from 'cesium'
  * 类初始化openIndexDb即可使用
  */
 class CacheUrlClass {
-  dataBaseName = 'mapDatabase'
-  tileStoreName = 'cesiumUrlStore'
+  dataBaseName = 'cbcMapDatabase'
+  tileStoreName = 'cbcCesiumUrlStore'
   isCache = false //是否全缓存
   option = {
     cacheUrl: [] //若无该配置或者长度为0则全缓存，否则只缓存配置的url
