@@ -27,7 +27,15 @@ export const mapSeniorMenuConfigs = [
     url: "/TileEditTool",
     type: "VUE",
     img: "./images/menu/addGeode.png"
+  },
+  {
+    title: "缓存示例",
+    key: "CacheUrl",
+    url: "/CacheUrl",
+    type: "VUE",
+    img: "./images/menu/addGeode.png"
   }
+  
 
   
   

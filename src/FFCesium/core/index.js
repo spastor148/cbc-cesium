@@ -66,6 +66,7 @@ class FFCesium {
   flyRoam;
   flyRoamNew;
   constructor(id, option) {
+    // Synchronous constructor: start async cache init without awaiting
     if (option?.customOption?.cacheUrl) {
       this.openCache(id, option)
     } else {

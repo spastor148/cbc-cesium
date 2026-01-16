@@ -75,6 +75,11 @@ const routes = [
     path: "/TileEditTool",
     component: () => import("@/MapSenior/TileEditTool/index.vue")
   },
+  {
+    path: "/CacheUrl",
+    component: () => import("@/MapSenior/CacheUrl/index.vue")
+  },
+
 ];
 const router = createRouter({
   history: createWebHashHistory(), // hash路由模式

@@ -138,6 +138,7 @@ class CacheUrlClass {
     }
   }
   getIndexedDBUsage = () => {
+    console.log('cbc-getIndexedDBUsage',navigator)
     if (navigator.storage && navigator.storage.estimate) {
       try {
         const estimation = navigator.storage.estimate()
