@@ -1,4 +1,8 @@
 import * as Cesium from "cesium";
+
+//缓存类
+import CacheUrlClass from "./dependentLib/CacheUrlClass.js";
+
 //地图效果
 import ParticleEffectClass from "./libs/MapEffect/ParticleEffectClass.js";//粒子效果类
 import WeatherEffectClass from "./libs/MapEffect/WeatherEffectClass.js";//天气效果类
@@ -62,7 +66,24 @@ class FFCesium {
   flyRoam;
   flyRoamNew;
   constructor(id, option) {
-
+    if (option?.customOption?.cacheUrl) {
+      this.openCache(id, option)
+    } else {
+      this.initMap(id, option)
+    }
+  }
+  //开启缓存
+  async openCache(id, option) {
+    console.log("开启缓存");
+    let cacheOption = {
+      cacheUrl: option.customOption.cacheUrl,
+    }
+    let cacheUrlClass = new CacheUrlClass(cacheOption)
+    await cacheUrlClass.openIndexDb()
+    this.initMap(id, option)
+  }
+  //地图初始化
+  initMap(id, option) {
     this.Cesium = Cesium;
     //合并其他文件JS文件方法1231
     let time1 = new Date().getTime();
@@ -124,6 +145,7 @@ class FFCesium {
     this.flyRoam = new FlyRoam(this);
     this.flyRoamNew = new FlyRoamNew(this);
   }
+
   defaultMap() {
     let viewerOption = {
       animation: false, //是否创建动画小器件，左下角仪表

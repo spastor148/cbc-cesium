@@ -28,5 +28,7 @@ export const mapSeniorMenuConfigs = [
     type: "VUE",
     img: "./images/menu/addGeode.png"
   }
+
+  
   
 ];
